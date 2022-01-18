@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import './welcome-header.styles.css';
 
 const WelcomeHeader = () => {
     return (
         <div className="welcome-header">
-            <div className="welcome-header-link">Register / Login</div>
+            <Link className="welcome-header-link" to="/register">Register / Login</Link>
         </div>
     );
 }

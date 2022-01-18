@@ -1,0 +1,69 @@
+.register {
+    background-color: rgb(198, 207, 207);
+    width: 60vw;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10%;
+    padding-top: 5%;
+}
+
+span {
+    padding-bottom: 5%;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 20%;
+}
+
+.form-input {
+    /* width: 80%; */
+    /* height: 20%; */
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin: 10px 0;
+    /* margin-left: 10%; */
+    padding: 18px 10px;
+    
+}
+
+.form-buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.form-buttons button {
+    cursor: pointer;
+}
+
+.register-button {
+    width: 50%;
+    margin: 20px;
+    padding: 10px;
+    border: none;
+}
+
+.google-button {
+    width: 50%;
+    margin: 20px;
+    padding: 10px;
+    border: none;
+}
+
+.form-buttons span {
+    padding-top: 6%;
+}
+
+.login-here {
+    text-decoration: underline;
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 0 5px;
+}
