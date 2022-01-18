@@ -1,0 +1,12 @@
+.step2 {
+    border-bottom: 1px solid black;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.step2_subtitle {
+    width: 70vw;
+}
