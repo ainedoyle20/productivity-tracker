@@ -15,7 +15,7 @@ export const deleteTodo = todo => ({
     payload: todo
 });
 
-export const editTodo = todo => ({
+export const editTodo = (todoIdAndDescription) => ({
     type: TodosActionTypes.EDIT_TODO,
-    payload: todo
+    payload: todoIdAndDescription
 });

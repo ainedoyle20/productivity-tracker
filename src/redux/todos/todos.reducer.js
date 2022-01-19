@@ -1,6 +1,6 @@
 import TodosActionTypes from './todos.types';
 
-import { removeCompletedTodo, addCompletedTodo, createTodoHelper } from './todos.utils';
+import { removeCompletedTodo, addCompletedTodo, createTodoHelper, editTodoHelper } from './todos.utils';
 
 const INITIAL_STATE = {
     todos: [
@@ -30,6 +30,11 @@ const todosReducer = (state=INITIAL_STATE, action) => {
                 ...state,
                 todos: removeCompletedTodo(state.todos, action.payload),
                 completedTodos: removeCompletedTodo(state.completedTodos, action.payload)
+            }
+        case TodosActionTypes.EDIT_TODO:
+            return {
+                ...state,
+                todos: editTodoHelper(state.todos, action.payload)
             }
         default: 
             return state;

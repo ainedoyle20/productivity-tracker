@@ -1,3 +1,18 @@
+export const editTodoHelper = (todosList, todoIdAndDescription) => {
+    const todoId = todoIdAndDescription.todoId;
+    const todoDescription = todoIdAndDescription.todoDescription;
+    console.log('todoId: ', todoId);
+    console.log('todoDescription: ', todoDescription);
+
+    todosList.forEach(obj => {
+        if (obj.id === todoId) {
+            obj.description = todoDescription;
+        }
+    });
+
+    return todosList;
+}
+
 const findGreatestId = (todosList, completedTodosList) => {
     let largestTodoId = 0;
     if (todosList.length > 0) {

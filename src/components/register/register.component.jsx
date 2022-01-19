@@ -16,15 +16,23 @@ class Register extends React.Component {
         }
     }
 
+    // let navigate = useNavigate();
+    // const goHome = () => {
+    //     navigate('/home');
+    // }
+    
+
     handleSubmit = event => {
         event.preventDefault();
+
+        const { goToMain } = this.props;
 
         this.setState({
             displayName: '',
             email: '',
             password: '',
             confirmPassword: '',
-        });
+        }, () => goToMain());
     }
 
     handleChange = event => {

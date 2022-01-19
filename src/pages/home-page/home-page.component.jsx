@@ -8,8 +8,8 @@ import {createTodo} from '../../redux/todos/todos.actions';
 import './home-page.styles.css';
 
 const HomePage = ({ todos, completedTodos, createTodo }) => {
-    // console.log('todos: ', todos);
-    // console.log('completedTodos: ', completedTodos);
+    console.log('todos: ', todos);
+    console.log('completedTodos: ', completedTodos);
 
     const [textInput, setTextInput] = useState('');
 
