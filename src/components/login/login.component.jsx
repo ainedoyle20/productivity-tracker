@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { auth, signInWithEmailAndPassword } from "../../firebase/firebase.utils";
+
 import { toggleLogin } from "../../redux/user/user.actions";
 
 import './login.styles.css';
@@ -14,13 +16,20 @@ class Login extends React.Component {
         }
     }
 
-    handleSubmit = event => {
+    handleSubmit = async event => {
         event.preventDefault();
 
-        this.setState({
-            email: '',
-            password: '',
-        });
+        const { email, password } = this.state;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            this.setState({
+                email: '',
+                password: '',
+            });
+        } catch (error) {
+            console.log('error signing in: ', error.message);
+        }
     }
 
     handleChange = event => {

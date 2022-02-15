@@ -1,14 +1,26 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+
+import { auth, signOut } from "../../firebase/firebase.utils";
 
 import './welcome-header.styles.css';
 
-const WelcomeHeader = () => {
+const WelcomeHeader = ({ currentUser }) => {
     return (
         <div className="welcome-header">
-            <Link className="welcome-header-link" to="/register">Register / Login</Link>
+            {
+                currentUser 
+                    ?  <div onClick={() => signOut(auth)}>Logout</div> 
+                    : <Link className="welcome-header-link" to="/register">Register / Login</Link>
+            }
+            
         </div>
     );
 }
 
-export default WelcomeHeader;
+const mapStateToProps = ({ user }) => ({
+    currentUser: user.currentUser,
+});
+
+export default connect(mapStateToProps)(WelcomeHeader);

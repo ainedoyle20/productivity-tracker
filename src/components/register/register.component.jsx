@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { registerWithEmailAndPassword, createUserProfileDocument, signInWithGoogle } from "../../firebase/firebase.utils";
+
 import { toggleLogin } from '../../redux/user/user.actions';
 
 import './register.styles.css';
@@ -13,6 +15,7 @@ class Register extends React.Component {
             email: '',
             password: '',
             confirmPassword: '',
+            isLoading: false,
         }
     }
 
@@ -20,19 +23,51 @@ class Register extends React.Component {
     // const goHome = () => {
     //     navigate('/home');
     // }
+
+    // export function* signUp({ payload: { displayName, email, password }}) {
+    //     try {
+    //       const {user} = yield auth.createUserWithEmailAndPassword(email, password);
+    //       const userRef = yield call(createUserProfileDocument, user, { displayName });
+    //       const snapshot = yield userRef.get();
+    //       yield put(signUpSuccess({ id: snapshot.id, ...snapshot.data() }));
+    //     } catch (error) {
+    //       yield put(signUpFailure(error));
+    //     }
+    // }
     
 
-    handleSubmit = event => {
+    handleSubmit = async event => {
         event.preventDefault();
+        this.setState({ isLoading: true });
 
-        const { goToMain } = this.props;
+        const { displayName, email, password } = this.state;
+        const { redirectToHome } = this.props;
 
-        this.setState({
-            displayName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-        }, () => goToMain());
+        try {
+            const {user} = await registerWithEmailAndPassword(email, password); 
+            await createUserProfileDocument(user, {displayName});
+            this.setState({
+                displayName: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                isLoading: false,
+            }, () => redirectToHome());
+        } catch (error) {
+            alert('This email is already in use.');
+            this.setState({ isLoading: false});
+            return;
+        }
+        
+        // const { goToMain } = this.props;
+
+        // this.setState({
+        //     displayName: '',
+        //     email: '',
+        //     password: '',
+        //     confirmPassword: '',
+        //     isLoading: false,
+        // }, () => goToMain());
     }
 
     handleChange = event => {
@@ -81,9 +116,11 @@ class Register extends React.Component {
                     placeholder="confirm password"
                 />
                 <div className="form-buttons">
-                   <button className="register-button" type="submit">Register</button> 
+                   <button className="register-button" type="submit" disabled={this.state.isLoading}>
+                       Register
+                    </button> 
                    <span>OR</span>
-                   <button className="google-button" type="button">Continue with Google</button>
+                   <button className="google-button" type="button" onClick={signInWithGoogle}>Continue with Google</button>
                 </div>
                 
                 <span>Already have an account? Login 

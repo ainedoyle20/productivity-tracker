@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { auth, signOut } from "../../firebase/firebase.utils";
+
 import Menu from '../../assets/menu.svg';
 import Home from '../../assets/home.svg';
 import Schedule from '../../assets/schedule.svg';
@@ -59,6 +61,18 @@ const Sidebar = () => {
                 >
                     <img src={Progress} alt='Progress' />
                     <Text clicked={clickStatus}>Progress</Text>
+                </Item>
+                <Item
+                    className="item"
+                    onClick={() => {
+                        setClickStatus(false);
+                        signOut(auth);
+                    }}
+                    activeclassname="active"
+                    to="/"
+                >
+                    <img src={Progress} alt='Progress' />
+                    <Text clicked={clickStatus}>Logout</Text>
                 </Item>
             </Slickbar>
         </SidbarContainer>
