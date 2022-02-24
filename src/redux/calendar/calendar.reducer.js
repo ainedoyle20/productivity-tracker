@@ -1,15 +1,21 @@
 import CalendarActionTypes from "./calendar.types"
 
 const INITIAL_STATE = {
+    hidden: true,
     selectedDate: null,
     nav: 0,
-    showTodoModal: false,
     days: [],
     dateDisplay: '',
+    currentDate: '',
 }
 
 const calendarReducer = (state=INITIAL_STATE, action) => {
     switch(action.type) {
+        case CalendarActionTypes.SET_CURRENT_DATE:
+            return {
+                ...state,
+                currentDate: action.payload
+            }
         case CalendarActionTypes.SET_DAYS:
             return {
                 ...state,
@@ -25,10 +31,10 @@ const calendarReducer = (state=INITIAL_STATE, action) => {
                 ...state,
                 dateDisplay: action.payload
             }
-        case CalendarActionTypes.TOGGLE_SHOW_TODO_MODAL:
+        case CalendarActionTypes.TOGGLE_HIDDEN:
             return {
                 ...state,
-                showTodoModal: !state.showTodoModal
+                hidden: !state.hidden
             }
         case CalendarActionTypes.INCREASE_NAV:
             return {

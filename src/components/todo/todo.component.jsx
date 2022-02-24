@@ -8,6 +8,7 @@ import TodoEditForm from '../todoEditForm/todoEditForm.component';
 import './todo.styles.css';
 
 const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
+
     const [edit, setEdit] = useState({
         id: null,
         value: ''
@@ -21,6 +22,8 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
         });
     };
 
+    
+
     if (edit.id) {
         return <TodoEditForm edit={edit} submitEdit={submitEdit}/>
     }
@@ -31,7 +34,9 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
            <li className="todo-container">
                 <p className="todo-description">{description}</p>
                 <div className="icon-container">
-                    <span className="todo-icon" onClick={() => completeTodo(todo)}>
+                    <span className="todo-icon" onClick={() => {
+                        completeTodo(todo);
+                    }}>
                         done
                     </span> 
                     <span className="todo-icon" onClick={() => setEdit({ id: todo.id, value: description })}>

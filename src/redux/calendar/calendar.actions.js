@@ -13,8 +13,8 @@ export const decreaseNav = () => ({
     type: CalendarActionTypes.DECREASE_NAV,
 });
 
-export const toggleShowTodoModal = () => ({
-    type: CalendarActionTypes.TOGGLE_SHOW_TODO_MODAL,
+export const toggleHidden = () => ({
+    type: CalendarActionTypes.TOGGLE_HIDDEN,
 });
 
 export const setDays = (daysArr) => ({
@@ -25,4 +25,9 @@ export const setDays = (daysArr) => ({
 export const setDateDisplay = (dateDisplay) => ({
     type: CalendarActionTypes.SET_DATE_DISPLAY,
     payload: dateDisplay,
+});
+
+export const setCurrentDate = (currentDate) => ({
+    type: CalendarActionTypes.SET_CURRENT_DATE,
+    payload: currentDate,
 });

@@ -1,0 +1,20 @@
+.calendar-modal {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 10;
+    min-width: 400px;
+    min-height: 400px;
+    border: 1px solid black;
+}
+
+.display-todos-container {
+    height: 250px;
+    width: 100%;
+    overflow: scroll;
+}
+
+.calendar-modal-button,
+.calendar-modal-create-button {
+    background-color: black;
+}

@@ -19,3 +19,13 @@ export const editTodo = (todoIdAndDescription) => ({
     type: TodosActionTypes.EDIT_TODO,
     payload: todoIdAndDescription
 });
+
+export const updateIncompletedTodos = (notCompletedTodosArray) => ({
+    type: TodosActionTypes.UPDATE_INCOMPLETE_TODOS,
+    payload: notCompletedTodosArray,
+});
+
+export const updateCompletedTodos = (completedTodosArray) => ({
+    type: TodosActionTypes.UPDATE_COMPLETED_TODOS,
+    payload: completedTodosArray,
+});

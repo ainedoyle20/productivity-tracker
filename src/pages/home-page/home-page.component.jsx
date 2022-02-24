@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { connect } from 'react-redux';
+
+import { updateTodosForCurrentDay } from '../../firebase/firebase.utils';
 
 import Todo from '../../components/todo/todo.component';
 
@@ -7,12 +9,21 @@ import {createTodo} from '../../redux/todos/todos.actions';
 
 import './home-page.styles.css';
 
-const HomePage = ({ todos, completedTodos, createTodo }) => {
-    console.log('todos: ', todos);
-    console.log('completedTodos: ', completedTodos);
+const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate, todosChanged }) => {
+    useEffect(() => {
+        const currentUserId = currentUser ? currentUser.id : null;
+        console.log('running useEffect outside');
+        if (currentUserId) {
+           updateTodosForCurrentDay(currentUserId, currentDate, todos, completedTodos); 
+           console.log('running useEffect');
+        }
+    }, [todosChanged, todos, completedTodos]);
+
 
     const [textInput, setTextInput] = useState('');
 
+    console.log('todos: ', todos);
+    console.log('completedTodos: ', completedTodos);
     return (
         <div className='home_page'>
             <h1 className="home_page_title">Today's Schedule</h1>
@@ -37,7 +48,7 @@ const HomePage = ({ todos, completedTodos, createTodo }) => {
                 
                 <ul className="todos-list">
                     {
-                        todos.length ? (
+                        todos && todos.length ? (
                         todos.map(todo => {
                             return <Todo key={todo.id} todo={todo} />
                         }) 
@@ -65,9 +76,12 @@ const HomePage = ({ todos, completedTodos, createTodo }) => {
     );  
 }
 
-const mapStateToProps = ({ todos }) => ({
+const mapStateToProps = ({ user, calendar, todos }) => ({
+    currentUser: user.currentUser,
+    currentDate: calendar.currentDate,
     todos: todos.todos,
-    completedTodos: todos.completedTodos
+    completedTodos: todos.completedTodos,
+    todosChanged: todos.todosChanged
 });
 
 const mapDispatchToProps = dispatch => ({

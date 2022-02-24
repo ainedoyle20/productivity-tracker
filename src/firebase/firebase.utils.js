@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 
 // So adding the SDKS....
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
-import {getFirestore, doc, getDoc, setDoc, onSnapshot} from 'firebase/firestore';
+import {getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,6 +22,87 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
+
+export const checkForTodosDoc = async (currentUserId, date) => {
+    const todosRef = doc(db, 'todos', currentUserId);
+    const todosSnap = await getDoc(todosRef);
+
+    if (!todosSnap.exists()) {
+        console.log('no todo doc here');
+        setTodoDoc(currentUserId, date);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+export const getCalendarTodos = async (currentUserId, date) => {
+    const todosRef = doc(db, 'todos', currentUserId);
+    const todosSnap = await getDoc(todosRef);
+    const todos = todosSnap.data();
+    const firebaseTodos = todos[date]['todos'];
+    return firebaseTodos;
+}
+
+export const fetchTodosForCurrentDay = async (currentUserId, date) => {
+    const todosRef = doc(db, 'todos', currentUserId);
+    const todosSnap = await getDoc(todosRef);
+
+    if (!todosSnap.exists()) {
+        console.log('no todos documents for this user');
+        setTodoDoc(currentUserId, date);
+        const firebaseTodos = [];
+        const firebaseCompletedTodos =  [];
+        return {firebaseTodos, firebaseCompletedTodos};
+    } else {
+        const todos = todosSnap.data();
+        console.log('todos[date] ', todos[date]);
+        if (todos[date]) {
+            console.log('todos[date] is true');
+            const firebaseTodos = todos[date]['todos'];
+            const firebaseCompletedTodos =  todos[date]['completedTodos'];
+            // console.log('firebase todos: ', firebaseTodos);
+            // console.log('firebase completedTodos: ', firebaseCompletedTodos);
+            return {firebaseTodos, firebaseCompletedTodos};  
+        } else {
+            console.log('todos[date] is false');
+            updateTodosForCurrentDay(currentUserId, date, [], []);
+            const firebaseTodos = [];
+            const firebaseCompletedTodos =  [];
+            return {firebaseTodos, firebaseCompletedTodos};
+        } 
+    }
+}
+
+export const updateTodosForCurrentDay = async (currentUserId, date, notCompleted, isCompleted) => {
+    const docRef = doc(db, 'todos', currentUserId);
+    
+    try {
+        await updateDoc(docRef, {
+            [date]: {
+                'todos': notCompleted,
+                'completedTodos': isCompleted,
+            }
+        });
+    } catch (error) {
+        console.log('error updating doc, ', error.message)
+    }
+}
+
+export const setTodoDoc = async (currentUserId, date) => {
+    const docRef = doc(db, 'todos', currentUserId);
+    
+    try {
+        await setDoc(docRef, {
+            [date]: {
+                'todos': [],
+                'completedTodos': [],
+            }
+        });
+    } catch (error) {
+        console.log('error setting doc, ', error.message)
+    }
+}
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!userAuth) return;

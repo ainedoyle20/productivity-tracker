@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 
-import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth } from './firebase/firebase.utils';
-// import { useAuth } from './firebase/firebase.utils';
+import { updateIncompletedTodos, updateCompletedTodos } from './redux/todos/todos.actions';
+import { setCurrentDate } from './redux/calendar/calendar.actions';
+
+import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth, fetchTodosForCurrentDay, updateTodosForCurrentDay } from './firebase/firebase.utils';
 
 import { setCurrentUser } from './redux/user/user.actions';
 
@@ -13,14 +15,32 @@ import MainPage from './pages/main-page/main-page.component';
 
 import './App.css';
 
-class App extends React.Component {
+const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate, todos, completedTodos}) => {
 
-  unsubscribeFromAuth = null;
+  useEffect(async () => {
+    if (currentUser) {
+      console.log('i ran');
+      const currentUserId = currentUser.id;
+      console.log('currentUserId: ', currentUserId);
 
-  componentDidMount() {
-    const { setCurrentUser } = this.props;
+      const dt = new Date();
+      const day = dt.getDate();
+      const month = dt.getMonth();
+      const year = dt.getFullYear();
 
-    this.unsubscribeFromAuth = onAuthStateChanged(auth, async userAuth => {
+      const currentDate = `${day}-${month + 1}-${year}`;
+      console.log('currentDate ', currentDate);
+      setCurrentDate(currentDate);
+
+      const {firebaseTodos, firebaseCompletedTodos} = await fetchTodosForCurrentDay(currentUserId, currentDate);
+      updateCompletedTodos(firebaseCompletedTodos); 
+      updateIncompletedTodos(firebaseTodos);
+    }
+  }, [currentUser]);
+
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
 
@@ -34,34 +54,32 @@ class App extends React.Component {
         setCurrentUser(userAuth);
       }
     });
-  }
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-  
-  render() {
-    const { currentUser } = this.props;
-    console.log('currentUser: ', currentUser);
-    return (
-      <div>
-        <Routes>
-          <Route exact path="/" element={<LandingPage/>} />
-          <Route path="/register" element={<RegisterAndLoginPage/>} />
-          <Route path="/main/*" element={<MainPage />} />
-        </Routes>
-      </div>
-    );  
-  }
-    
+    return unsub;
+  }, []);
+
+  return (
+    <div>
+      <Routes>
+        <Route exact path="/" element={<LandingPage/>} />
+        <Route path="/register" element={<RegisterAndLoginPage/>} />
+        <Route path="/main/*" element={<MainPage />} />
+      </Routes>
+    </div>
+  ); 
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+const mapStateToProps = ({ user, todos }) => ({
+  currentUser: user.currentUser,
+  todos: todos.todos,
+  completedTodos: todos.completedTodos,
 });
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  updateCompletedTodos: (completedTodosArray) => dispatch(updateCompletedTodos(completedTodosArray)),
+  updateIncompletedTodos: (inCompleteTodos) => dispatch(updateIncompletedTodos(inCompleteTodos)),
+  setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
