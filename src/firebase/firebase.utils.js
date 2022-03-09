@@ -23,13 +23,14 @@ export const auth = getAuth();
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-export const checkForTodosDoc = async (currentUserId, date) => {
+export const checkForTodosItem = async (currentUserId, date) => {
     const todosRef = doc(db, 'todos', currentUserId);
     const todosSnap = await getDoc(todosRef);
+    const todos = todosSnap.data();
 
-    if (!todosSnap.exists()) {
-        console.log('no todo doc here');
-        setTodoDoc(currentUserId, date);
+    if (!todos[date]) {
+        console.log('no todo item here');
+        setTodoItem(currentUserId, date);
         return false;
     } else {
         return true;
@@ -74,6 +75,101 @@ export const fetchTodosForCurrentDay = async (currentUserId, date) => {
     }
 }
 
+export const firebasePercentagesCheck = async (currentUserId, date, daysInMonth) => {
+    const parsedDate = date.split('-');
+    const monthField = `${parsedDate[1]}-${parsedDate[2]}`;
+
+    const percentagesRef = doc(db, 'percentages', currentUserId);
+    const percentagesSnap = await getDoc(percentagesRef);
+
+    if (!percentagesSnap.exists()) {
+        setPercentageDoc(currentUserId, monthField, daysInMonth);
+        return;
+    }
+
+    const percentages = percentagesSnap.data();
+    if (!percentages[monthField]) {
+        createNewMonthField(currentUserId, monthField, daysInMonth);
+        return;
+
+        // console.log('there is a monthfield here');
+        // if (!percentages[monthField][dateKey] && percentages[monthField][dateKey] !== 0) {
+        //     console.log('no todays date here');
+        //     createPercentageKey(currentUserId, monthField, dateKey);
+        //     return;
+        // } else {
+        //     console.log('todays date is here');
+        //     return;
+        // }
+    }
+    return;
+}
+
+const createNewMonthField = async (currentUserId, monthField, daysInMonth) => {
+    let datesObj = {};
+    for (let i = 1; i <= daysInMonth; i++) {
+        datesObj[i] = 0;
+    }
+
+    const docRef = doc(db, 'percentages', currentUserId);
+
+    try {
+        await updateDoc(docRef, {
+            [monthField]: datesObj,
+        });
+    } catch (error) {
+        console.log('error creating new Month Filed: ', error.message);
+    }
+}
+
+export const fetchDatesAndPercentages = async (currentUserId, monthField) => {
+    const docRef = doc(db, 'percentages', currentUserId);
+    const snapshot = await getDoc(docRef);
+    const snapshotData = snapshot.data();
+    if (!snapshotData[monthField]) {
+        const dates = [];
+        const percentages = [];
+        return {dates, percentages};
+    } else {
+        const monthFieldObj = snapshotData[monthField];
+
+        const dates = Object.keys(monthFieldObj);
+        const percentages = Object.values(monthFieldObj);
+
+        return {dates, percentages}; 
+    }
+}
+
+// const createPercentageKey = async (currentUserId, monthField, dateKey) => {
+//     const docRef = doc(db, 'percentages', currentUserId);
+
+//     try {
+//         await updateDoc(docRef, {
+//             [monthField]: {
+//                 [dateKey]: 0,
+//             }
+//         });
+//     } catch (error) {
+//         console.log('error creating percentage key: ', error.message);
+//     }
+// }
+
+export const updatePercentageValue = async (currentUserId, date, todosPercentage) => {
+    const parsedDate = date.split('-');
+    const monthField = `${parsedDate[1]}-${parsedDate[2]}`;
+    const dateKey = parsedDate[0];
+
+    const percentagesRef = doc(db, 'percentages', currentUserId);
+
+    try {
+        await updateDoc(percentagesRef, {
+            [`${monthField}.${dateKey}`]: todosPercentage,
+        });
+    } catch (error) {
+        console.log('error updatingPercentageValue: ', error.message);
+    }
+}
+
 export const updateTodosForCurrentDay = async (currentUserId, date, notCompleted, isCompleted) => {
     const docRef = doc(db, 'todos', currentUserId);
     
@@ -86,6 +182,55 @@ export const updateTodosForCurrentDay = async (currentUserId, date, notCompleted
         });
     } catch (error) {
         console.log('error updating doc, ', error.message)
+    }
+}
+
+export const saveCalendarTodosToFirebase = async (currentUserId, date, calendarTodos) => {
+    if (calendarTodos.length === 0) {
+        return;
+    }
+
+    const docRef = doc(db, 'todos', currentUserId);
+    console.log('got here');
+
+    try {
+        await updateDoc(docRef, {
+            [`${date}.todos`]: calendarTodos
+        });
+    } catch (error) {
+        console.log('error saving calendar todos to firebase, ', error.message)
+    }
+}
+
+export const setPercentageDoc = async (currentUserId, monthField, daysInMonth) => {
+    let datesObj = {};
+    for (let i = 1; i <= daysInMonth; i++) {
+        datesObj[i] = 0;
+    }
+
+    const docRef = doc(db, 'percentages', currentUserId);
+
+    try {
+        await setDoc(docRef, {
+            [monthField]: datesObj,
+        });
+    } catch (error) {
+        console.log('error setting percentage doc: ', error.message);
+    }
+}
+
+export const setTodoItem = async (currentUserId, date) => {
+    const docRef = doc(db, 'todos', currentUserId);
+    
+    try {
+        await updateDoc(docRef, {
+            [date]: {
+                'todos': [],
+                'completedTodos': [],
+            }
+        });
+    } catch (error) {
+        console.log('error setting item: ', error.message)
     }
 }
 

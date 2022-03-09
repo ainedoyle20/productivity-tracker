@@ -17,11 +17,11 @@
 }
 
 .day + .currentDay {
-    background-color:#e8f4fa;
+    background-color:#deeef7;
 }
 
 .padding {
     cursor: default !important;
-    background-color: #FFFCFF !important;
+    background-color: rgb(228, 228, 228) !important;
     box-shadow: none !important;
 }

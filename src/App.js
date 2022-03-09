@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import { updateIncompletedTodos, updateCompletedTodos } from './redux/todos/todos.actions';
 import { setCurrentDate } from './redux/calendar/calendar.actions';
 
-import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth, fetchTodosForCurrentDay, updateTodosForCurrentDay } from './firebase/firebase.utils';
+import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth, fetchTodosForCurrentDay, firebasePercentagesCheck } from './firebase/firebase.utils';
 
 import { setCurrentUser } from './redux/user/user.actions';
 
@@ -19,7 +19,6 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
 
   useEffect(async () => {
     if (currentUser) {
-      console.log('i ran');
       const currentUserId = currentUser.id;
       console.log('currentUserId: ', currentUserId);
 
@@ -28,9 +27,13 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
       const month = dt.getMonth();
       const year = dt.getFullYear();
 
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
       const currentDate = `${day}-${month + 1}-${year}`;
-      console.log('currentDate ', currentDate);
+      console.log('currentDate: ', currentDate);
       setCurrentDate(currentDate);
+
+      firebasePercentagesCheck(currentUserId, currentDate, daysInMonth);
 
       const {firebaseTodos, firebaseCompletedTodos} = await fetchTodosForCurrentDay(currentUserId, currentDate);
       updateCompletedTodos(firebaseCompletedTodos); 
@@ -67,7 +70,7 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
       </Routes>
     </div>
   ); 
-}
+};
 
 const mapStateToProps = ({ user, todos }) => ({
   currentUser: user.currentUser,

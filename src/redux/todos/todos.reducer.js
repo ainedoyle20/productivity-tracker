@@ -1,6 +1,6 @@
 import TodosActionTypes from './todos.types';
 
-import { removeCompletedTodo, addCompletedTodo, createTodoHelper, editTodoHelper } from './todos.utils';
+import { removeCompletedTodo, addCompletedTodo, createTodoHelper, editTodoHelper, calculatePercentage } from './todos.utils';
 
 const INITIAL_STATE = {
     todos: [
@@ -11,19 +11,25 @@ const INITIAL_STATE = {
     ],
     completedTodos: [],
     todosChanged: false,
+    percentageComplete: 0,
 }
 
 const todosReducer = (state=INITIAL_STATE, action) => {
     switch (action.type) {
+        case TodosActionTypes.UPDATE_PERCENTAGE:
+            return {
+                ...state,
+                percentageComplete: calculatePercentage(state.todos, state.completedTodos),
+            }
         case TodosActionTypes.UPDATE_INCOMPLETE_TODOS:
             return {
                 ...state,
-                todos: action.payload
+                todos: action.payload,
             }
         case TodosActionTypes.UPDATE_COMPLETED_TODOS:
             return {
                 ...state,
-                completedTodos: action.payload
+                completedTodos: action.payload,
             }
         case TodosActionTypes.COMPLETE_TODO: 
             return {
@@ -35,7 +41,7 @@ const todosReducer = (state=INITIAL_STATE, action) => {
             return {
                 ...state,
                 todos: createTodoHelper(state.todos, state.completedTodos, action.payload),
-                todosChanged: !state.todosChanged
+                todosChanged: !state.todosChanged,
             }
         case TodosActionTypes.DELETE_TODO:
             return {

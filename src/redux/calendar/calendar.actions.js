@@ -5,6 +5,11 @@ export const selectDate = (date) => ({
     payload: date,
 });
 
+export const checkSelectedDate = (date) => ({
+    type: CalendarActionTypes.CHECK_SELECTED_DATE,
+    payload: date,
+});
+
 export const increaseNav = () => ({
     type: CalendarActionTypes.INCREASE_NAV,
 });

@@ -29,3 +29,7 @@ export const updateCompletedTodos = (completedTodosArray) => ({
     type: TodosActionTypes.UPDATE_COMPLETED_TODOS,
     payload: completedTodosArray,
 });
+
+export const updatePercentage = () => ({
+    type: TodosActionTypes.UPDATE_PERCENTAGE,
+});

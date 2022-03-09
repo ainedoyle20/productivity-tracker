@@ -1,8 +1,11 @@
 import CalendarActionTypes from "./calendar.types"
 
+import { checkSelectedDate } from "./calendar.utils"
+
 const INITIAL_STATE = {
     hidden: true,
     selectedDate: null,
+    isPastDate: false,
     nav: 0,
     days: [],
     dateDisplay: '',
@@ -24,7 +27,12 @@ const calendarReducer = (state=INITIAL_STATE, action) => {
         case CalendarActionTypes.SELECT_DATE:
             return {
                 ...state,
-                selectedDate: action.payload
+                selectedDate: action.payload,
+            }
+        case CalendarActionTypes.CHECK_SELECTED_DATE:
+            return {
+                ...state,
+                isPastDate: checkSelectedDate(action.payload, state.currentDate),
             }
         case CalendarActionTypes.SET_DATE_DISPLAY:
             return {

@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 
-import { updateTodosForCurrentDay } from '../../firebase/firebase.utils';
+import { updateTodosForCurrentDay, updatePercentageValue } from '../../firebase/firebase.utils';
 
 import Todo from '../../components/todo/todo.component';
 
-import {createTodo} from '../../redux/todos/todos.actions';
+import {createTodo, updatePercentage} from '../../redux/todos/todos.actions';
 
 import './home-page.styles.css';
 
-const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate, todosChanged }) => {
+const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate, todosChanged, percentageComplete, updatePercentage }) => {
     useEffect(() => {
         const currentUserId = currentUser ? currentUser.id : null;
         console.log('running useEffect outside');
@@ -17,13 +17,22 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
            updateTodosForCurrentDay(currentUserId, currentDate, todos, completedTodos); 
            console.log('running useEffect');
         }
+        updatePercentage();
     }, [todosChanged, todos, completedTodos]);
+
+    useEffect(() => {
+        const currentUserId = currentUser ? currentUser.id : null;
+        if (currentUserId) {
+            updatePercentageValue(currentUserId, currentDate, percentageComplete);
+        }
+    }, [percentageComplete]);
 
 
     const [textInput, setTextInput] = useState('');
 
     console.log('todos: ', todos);
     console.log('completedTodos: ', completedTodos);
+    console.log('percentageComplete: ', percentageComplete);
     return (
         <div className='home_page'>
             <h1 className="home_page_title">Today's Schedule</h1>
@@ -81,11 +90,13 @@ const mapStateToProps = ({ user, calendar, todos }) => ({
     currentDate: calendar.currentDate,
     todos: todos.todos,
     completedTodos: todos.completedTodos,
-    todosChanged: todos.todosChanged
+    todosChanged: todos.todosChanged,
+    percentageComplete: todos.percentageComplete,
 });
 
 const mapDispatchToProps = dispatch => ({
     createTodo: (textInput) => dispatch(createTodo(textInput)),
+    updatePercentage: () => dispatch(updatePercentage()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

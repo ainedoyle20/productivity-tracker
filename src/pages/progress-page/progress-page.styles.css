@@ -1,0 +1,25 @@
+.progress-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-page-title-container {
+    width: 30vw;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-page-button {
+    background-color: rgb(170, 150, 192);
+}
+
+.progress-page-no-data {
+    position: absolute;
+}
+
+.dates-full {
+    display: none;
+}
