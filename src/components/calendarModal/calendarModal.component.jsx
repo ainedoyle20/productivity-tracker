@@ -5,7 +5,19 @@ import { checkForTodosItem, getCalendarTodos, saveCalendarTodosToFirebase } from
 
 import { toggleHidden } from '../../redux/calendar/calendar.actions';
 
-import './calendarModal.styles.css';
+import PlusIcon from '../../assets/plus-icon.svg';
+import DeleteIcon from '../../assets/delete-icon.svg';
+
+import {
+    CalendarModalContainer,
+    CalendarModalHeader,
+    CalendarModalInput,
+    CalendarModalCreateTodoButton,
+    CalendarModalTodosList,
+    CalendarModalTodoContainer,
+    CloseModalButtonContainer,
+    CloseModalButton,
+} from './calendar-modal.styles';
 
 const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) => {
     const [calendarTodos, setCalendarTodos] = useState([]);
@@ -13,13 +25,10 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
 
     const runOnOpen = async () => {
         const todosAvailable = await checkForTodosItem(currentUser.id, selectedDate);
-        console.log('checked for todosAvailable for ' + selectedDate);
-        console.log('todosAvailable: ', todosAvailable);
 
         if (todosAvailable) {
             const firebaseTodos = await getCalendarTodos(currentUser.id, selectedDate);
             setCalendarTodos(firebaseTodos);
-            console.log('setting calendar todos with firebase todos: ', firebaseTodos);
         }
     }
     
@@ -47,42 +56,59 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
         setCalendarTodos(todosList);
     }
 
-    console.log('isPastDate: ', isPastDate);
+    const deleteCalendarTodo = (todoId, todosList) => {
+        console.log('todoId: ', todoId);
+        let todosArr = todosList.filter(todo => todo.id !== todoId);
+        setCalendarTodos(todosArr);
+    }
+
+    console.log('calendarTodos: ', calendarTodos);
     return (
-        <div className="calendar-modal">
-            <input 
-                className="calendar-input"
-                placeholder="Create Todo"
-                onChange={e => setCalendarInput(e.target.value)}
-                value={calendarInput}
-            />
-            <button className="calendar-modal-create-button" disabled={isPastDate}
-                onClick={() => {
-                    console.log('calendarTodos: ', calendarTodos);
-                    createCalendarTodo(calendarInput, calendarTodos);
-                    setCalendarInput('');
-                }}
-            >Create</button>
-            <ul className="display-todos-container">
+        <CalendarModalContainer>
+            <CalendarModalHeader>
+              <CalendarModalInput
+                    placeholder="Create Todo"
+                    onChange={e => setCalendarInput(e.target.value)}
+                    value={calendarInput}
+                /> 
+                <CalendarModalCreateTodoButton disabled={isPastDate}
+                    onClick={() => {
+                        console.log('calendarTodos: ', calendarTodos);
+                        createCalendarTodo(calendarInput, calendarTodos);
+                        setCalendarInput('');
+                    }}
+                >
+                    <img src={PlusIcon} alt="plus"/>
+                </CalendarModalCreateTodoButton> 
+            </CalendarModalHeader>
+            
+            
+            <CalendarModalTodosList>
                 {
                     calendarTodos.length > 0 ? calendarTodos.map(obj => {
-                        return <li key={obj.id}>{obj.description}</li>
+                        return (<CalendarModalTodoContainer key={obj.id}>
+                        <li key={obj.id}>{obj.description}</li>
+                        <img className="display-todo-icon" onClick={() => deleteCalendarTodo(obj.id, calendarTodos)} src={DeleteIcon} alt="delete"/>
+                        </CalendarModalTodoContainer>)
                     }) : <span>No todos</span>
                 }
-            </ul>
-            <button className="calendar-modal-button"
-                onClick={() => {
-                    toggleHidden();
-                    if (calendarTodos.length && isPastDate !== true) {
-                        console.log('saving scheduled todos to firebase');
-                       saveCalendarTodosToFirebase(currentUser.id, selectedDate, calendarTodos); 
-                    }
-                    setCalendarTodos([]);
-                }}
-            >Close</button>
-        </div>
+            </CalendarModalTodosList>
+            <CloseModalButtonContainer>
+                <CloseModalButton
+                    onClick={() => {
+                        toggleHidden();
+                        if (calendarTodos.length && isPastDate !== true) {
+                        saveCalendarTodosToFirebase(currentUser.id, selectedDate, calendarTodos); 
+                        }
+                        setCalendarTodos([]);
+                    }}
+                >
+                    Close
+                </CloseModalButton>    
+            </CloseModalButtonContainer>
+        </CalendarModalContainer>
     );
-}
+};
 
 const mapStateToProps = ({ calendar, user }) => ({
     currentUser: user.currentUser,

@@ -10,6 +10,8 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
+import { ProgressChartContainer } from './progress-chart.styles';
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -65,15 +67,9 @@ const ProgressChart = ({ dates, percentages }) => {
     }
 
     return (
-        <div style={{ 
-            height: '80vh', 
-            width: '80vw', 
-            display: "flex",
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}>
+        <ProgressChartContainer>
            <Line options={options} data={data} />
-        </div>
+        </ProgressChartContainer>
     );
 };
 

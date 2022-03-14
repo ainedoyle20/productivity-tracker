@@ -1,15 +1,19 @@
 import React from "react";
 
-import WelcomeHeader from "../welcome-header/welcome-header.component";
+// import WelcomeHeader from "../welcome-header/welcome-header.component";
 
-import './welcome.styles.css';
+import {
+    WelcomeContainer,
+    WelcomeSubtitle,
+} from './welcome.styles';
 
 const Welcome = () => {
     return (
-        <div className="welcome">
-            <WelcomeHeader />
+        <WelcomeContainer>
+            {/* <WelcomeHeader /> */}
             <h1>Boost Your Productivity</h1>
-        </div>
+            <WelcomeSubtitle>Scroll down for set up instructions</WelcomeSubtitle>
+        </WelcomeContainer>
     );
 }
 

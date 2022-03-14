@@ -155,11 +155,16 @@ export const fetchDatesAndPercentages = async (currentUserId, monthField) => {
 // }
 
 export const updatePercentageValue = async (currentUserId, date, todosPercentage) => {
+    const percentagesRef = doc(db, 'percentages', currentUserId);
+    const percentagesSnap = await getDoc(percentagesRef);
+
+    if (!percentagesSnap.exists()) {
+        return;
+    }
+
     const parsedDate = date.split('-');
     const monthField = `${parsedDate[1]}-${parsedDate[2]}`;
     const dateKey = parsedDate[0];
-
-    const percentagesRef = doc(db, 'percentages', currentUserId);
 
     try {
         await updateDoc(percentagesRef, {
@@ -172,6 +177,9 @@ export const updatePercentageValue = async (currentUserId, date, todosPercentage
 
 export const updateTodosForCurrentDay = async (currentUserId, date, notCompleted, isCompleted) => {
     const docRef = doc(db, 'todos', currentUserId);
+    const snapshot = await getDoc(docRef);
+    if(!snapshot.exists()) return;
+
     
     try {
         await updateDoc(docRef, {

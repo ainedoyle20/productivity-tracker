@@ -13,7 +13,7 @@ import LandingPage from './pages/landing-page/landing-page.component';
 import RegisterAndLoginPage from './pages/register-and-login-page/register-and-login-page.component';
 import MainPage from './pages/main-page/main-page.component';
 
-import './App.css';
+import './App.styles.jsx';
 
 const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate, todos, completedTodos}) => {
 

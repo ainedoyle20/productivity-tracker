@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import CalendarDay from "../calendar-day/calendar-day.component";
 import CalendarModal from '../calendarModal/calendarModal.component';
 
-import './calendar.styles.css';
+import { CalendarContainer } from './calendar.styles';
 
 const Calendar = ({ days, hidden }) => {
     return (
-        <div id="calendar">
+        <CalendarContainer>
             {days.map((d, index) => (
                 <CalendarDay
                     key={index}
@@ -18,7 +18,7 @@ const Calendar = ({ days, hidden }) => {
                 {
                     hidden ? null : <CalendarModal />
                 }
-        </div>
+        </CalendarContainer>
         
     );
 }

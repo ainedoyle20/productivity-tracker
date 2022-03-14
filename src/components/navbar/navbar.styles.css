@@ -1,0 +1,90 @@
+.open-navbar-button {
+    position: fixed;
+    top: 11.8vh;
+    left: 5px;
+    background-color: rgb(228, 228, 228);
+    border: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    /* margin: 0.5rem 0 0 0.5rem; */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar {
+    background-color: rgb(228, 228, 228);
+    border: 1px solid black;
+    width: 10vw;
+    height: 70vh;
+    margin-top: 10vh;
+    border-radius: 0 30px 30px 0;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: space-between; */
+    position: fixed;
+    left: 0;
+    z-index: 100;
+}
+
+.hide-navbar {
+    display: none;
+}
+
+.close-navbar-button-container {
+    /* background-color: blue; */
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-navbar {
+    background-color: rgb(228, 228, 228);
+    border: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    /* margin: 0.5rem 0 0 0.5rem; */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-right: 5%;
+}
+
+.navbar-pages-links-container {
+    /* background-color: blue; */
+    margin-top: 12vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.navbar-page-link {
+    /* background-color: blueviolet; */
+    height: 8vh;
+    margin: 3px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-link-text {
+    font-size: 20px;
+    padding-left: 10px;
+}
+
+.navbar-setup-page-link-container {
+    /* background-color: blue; */
+    width: 100%;
+    margin-top: 16vh;
+    display: flex;
+    justify-content: flex-start;
+}

@@ -3,17 +3,20 @@ import { connect } from "react-redux";
 
 import { increaseNav, decreaseNav } from "../../redux/calendar/calendar.actions";
 
-import './calendarHeader.styles.css';
+import {
+    CalendarHeaderContainer,
+    CalendarHeaderButton
+} from './calendar-header.styles';
 
 const CalendarHeader = ({ dateDisplay, increaseNav, decreaseNav }) => {
     return (
-        <div id="header">
+        <CalendarHeaderContainer>
             <div>{dateDisplay}</div>
             <div>
-                <button id="backButton" onClick={() => decreaseNav()}>Back</button>
-                <button id="nextButton" onClick={() => increaseNav()}>Next</button>
+                <CalendarHeaderButton onClick={() => decreaseNav()}>Back</CalendarHeaderButton>
+                <CalendarHeaderButton onClick={() => increaseNav()}>Next</CalendarHeaderButton>
             </div>
-        </div>
+        </CalendarHeaderContainer>
     );
 }
 

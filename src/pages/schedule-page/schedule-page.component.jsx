@@ -6,9 +6,13 @@ import {setDateDisplay, setDays} from '../../redux/calendar/calendar.actions';
 import CalendarHeader from "../../components/calendarHeader/calendarHeader.component";
 import Calendar from "../../components/calendar/calendar.component";
 
-import './schedule-page.styles.css'
+import {
+    SchedulePageContainer,
+    CalendarPlatform,
+    WeekdaysContainer
+} from './schedule-page.styles';
 
-const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays }) => {
+const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays, currentUser }) => {
 
     useEffect(() => {
         const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -62,32 +66,40 @@ const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays }) => {
 
     return (
         
-        <div className="schedule-page">
-            <div id="container">
-                <CalendarHeader 
-                    dateDisplay={dateDisplay}
-                />
+        <SchedulePageContainer>
+            {
+                currentUser 
+                ? (
+                    <CalendarPlatform>
+                        <CalendarHeader 
+                            dateDisplay={dateDisplay}
+                        />
 
-                <div id="weekdays">
-                    <div>Monday</div>
-                    <div>Tuesday</div>
-                    <div>Wednesday</div>
-                    <div>Thursday</div>
-                    <div>Friday</div>
-                    <div>Saturday</div>
-                    <div>Sunday</div>
-                </div>
+                        <WeekdaysContainer>
+                            <div>Monday</div>
+                            <div>Tuesday</div>
+                            <div>Wednesday</div>
+                            <div>Thursday</div>
+                            <div>Friday</div>
+                            <div>Saturday</div>
+                            <div>Sunday</div>
+                        </WeekdaysContainer>
 
-                <Calendar />
+                        <Calendar />
 
-            </div>
-        </div>
+                    </CalendarPlatform>
+                )
+                :   
+                    <h2>Login to schedule future todos.</h2>
+            }
+        </SchedulePageContainer>
     );
 }
 
-const mapStateToProps = ({ calendar }) => ({
+const mapStateToProps = ({ calendar, user }) => ({
     nav: calendar.nav,
     dateDisplay: calendar.dateDisplay,
+    currentUser: user.currentUser,
 });
 
 const mapDispatchToProps = dispatch => ({

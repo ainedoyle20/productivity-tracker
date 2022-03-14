@@ -59,6 +59,6 @@ export const calculatePercentage = (todosList, completedTodosList) => {
     console.log('todosList: ', todosList);
     console.log('completedTodosList: ', completedTodosList);
     const totalTodos = todosList.length + completedTodosList.length;
-    const percentage = (completedTodosList.length / totalTodos) * 100;
+    const percentage = Math.floor((completedTodosList.length / totalTodos) * 100);
     return percentage;
 }

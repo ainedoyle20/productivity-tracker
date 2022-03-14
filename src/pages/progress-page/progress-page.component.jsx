@@ -6,12 +6,16 @@ import { setProgressDateDisplay, incrementProgressNav, decrementProgressNav } fr
 
 import ProgressChart from "../../components/progress-chart/progress-chart.component";
 
-import './progress-page.styles.css';
+import {
+    ProgressPageContainer,
+    ProgressPageTitleContainer,
+    ProgressPageButton,
+    NoChartDataMessageContainer,
+} from './progress-page.styles';
 
 const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDisplay, progressDateDisplay, incrementProgressNav, decrementProgressNav }) => {
     const [dates, setDates] = useState([]);
     const [percentages, setPercentages] = useState([]);
-    // const [className, setClassName] = useState('progress-page-no-data dates-full');
 
     useEffect(() => {
         const dt = new Date();
@@ -20,7 +24,7 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
 
         if (progressNav !== 0) {
             dt.setMonth(new Date().getMonth() + progressNav);
-            monthField = `${dt.toLocaleDateString('en-gb', { month: 'numeric' })}-${parsedDate[2]}`;
+            monthField = `${dt.toLocaleDateString('en-gb', { month: 'numeric' })}-${dt.getFullYear()}`;
         } else {
             monthField = `${parsedDate[1]}-${parsedDate[2]}`
         }
@@ -34,16 +38,7 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
             const { dates, percentages} = await fetchDatesAndPercentages(currentUserId, monthField);
             setDates(dates);
             setPercentages(percentages);
-            // updateClassName(dates);
         }
-
-        // const updateClassName = (dates) => {
-        //     if (dates.length !== 0) {
-        //         setClassName('progress-page-no-data dates-full')
-        //     } else {
-        //         setClassName('progress-page-no-data')
-        //     }
-        // }
 
         if (currentUserId) {
             runAsyncFunc();
@@ -52,21 +47,25 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
     }, [currentUser, progressNav]);
 
     return (
-        <div className='progress-page'>
-            <div className='progress-page-title-container'>
-                <button className="progress-page-button" onClick={() => decrementProgressNav()}>Back</button>
-                <h2>{progressDateDisplay}</h2>
-                <button className="progress-page-button" onClick={() => incrementProgressNav()}>Forward</button>
-            </div>
+        <ProgressPageContainer>
             {
-                currentUser 
-                ? <ProgressChart dates={dates}  percentages={percentages} /> 
-                : <h2>Login to see your progress chart</h2>
+                currentUser ? (
+                    <>
+                        <ProgressPageTitleContainer>
+                            <ProgressPageButton onClick={() => decrementProgressNav()}>Back</ProgressPageButton>
+                            <h2>{progressDateDisplay}</h2>
+                            <ProgressPageButton onClick={() => incrementProgressNav()}>Forward</ProgressPageButton>
+                        </ProgressPageTitleContainer>
+                        <ProgressChart dates={dates}  percentages={percentages} /> 
+                        <NoChartDataMessageContainer chartData={dates.length}>
+                            <h2>No Data For This Month</h2>
+                        </NoChartDataMessageContainer>
+                    </>
+                ) : (   
+                        <h2>Login to see your progress chart</h2>
+                )
             }
-            <div className={`progress-page-no-data ${dates.length !== 0 ? 'dates-full' : ''}`}>
-                <h2>No Data For This Month</h2>
-            </div>
-        </div>
+        </ProgressPageContainer>
     );
 }
 

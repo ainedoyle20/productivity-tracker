@@ -4,10 +4,21 @@ import { connect } from 'react-redux';
 import { updateTodosForCurrentDay, updatePercentageValue } from '../../firebase/firebase.utils';
 
 import Todo from '../../components/todo/todo.component';
+import PlusIcon from '../../assets/plus-icon.svg';
 
 import {createTodo, updatePercentage} from '../../redux/todos/todos.actions';
 
-import './home-page.styles.css';
+import {
+    HomePageContainer,
+    TodaysScheduleContainer,
+    TodaysTodosHeader,
+    CreateTodoContainer,
+    CreateTodoInput,
+    CreateTodaysTodoButton,
+    TodaysTodosListContainer,
+    TodosListTitleContainer,
+    TodaysTodosList,
+} from './home-page.styles';
 
 const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate, todosChanged, percentageComplete, updatePercentage }) => {
     useEffect(() => {
@@ -34,54 +45,68 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
     console.log('completedTodos: ', completedTodos);
     console.log('percentageComplete: ', percentageComplete);
     return (
-        <div className='home_page'>
-            <h1 className="home_page_title">Today's Schedule</h1>
-            <div className="home_page_container">
-                <div className="create_todo">
-                    <input 
-                        className="create-todo-input" 
-                        type="text" 
-                        value={textInput}
-                        onChange={(e) => setTextInput(e.target.value)}
-                    /><button className="add-todo-button" onClick={() =>{
-                        createTodo(textInput);
-                        setTextInput('');
-                        console.log('clicked')
-                        }}>Add Todo</button>
-                </div>
-
-
-                <div className="home_page_todos_title_container">
-                        <span>To Do</span>
-                </div>
-                
-                <ul className="todos-list">
-                    {
-                        todos && todos.length ? (
-                        todos.map(todo => {
-                            return <Todo key={todo.id} todo={todo} />
-                        }) 
-                        ) : (
-                            <span> No Todos Created Yet </span>
-                        )
-                    }
-                </ul>
-                <div className="home_page_todos_title_container">
-                        <span>Completed</span>
-                </div>
-                <ul className="todos-list">
-                    {
-                        completedTodos.length ? (
-                        completedTodos.map(todo => {
-                            return <Todo key={todo.id} todo={todo} />
-                        }) 
-                        ) : (
-                            <span> No Todos Completed Yet </span>
-                        )
-                    }
-                </ul>
-            </div>
-        </div>
+        <HomePageContainer>
+            {
+                currentUser 
+                ? (
+                    <TodaysScheduleContainer>
+                        <TodaysTodosHeader>
+                            <h1>Today's Schedule</h1>
+                            <CreateTodoContainer>
+                                <CreateTodoInput 
+                                    type="text" 
+                                    value={textInput}
+                                    onChange={(e) => setTextInput(e.target.value)}
+                                />
+                                <CreateTodaysTodoButton onClick={() =>{
+                                    createTodo(textInput);
+                                    setTextInput('');
+                                    console.log('clicked')
+                                }}>
+                                    <img className="plus-icon" src={PlusIcon} alt="plus" />
+                                </CreateTodaysTodoButton>
+                            </CreateTodoContainer>
+                        </TodaysTodosHeader>
+                        
+                        <TodaysTodosListContainer>
+                            <TodosListTitleContainer>
+                              <span>To Do</span>  
+                            </TodosListTitleContainer>
+                            <TodaysTodosList>
+                                {
+                                    todos && todos.length ? (
+                                    todos.map(todo => {
+                                        return <Todo key={todo.id} todo={todo} />
+                                    }) 
+                                    ) : (
+                                        <div className="no-todos-span"><span>No Todos</span></div>
+                                    )
+                                }
+                            </TodaysTodosList>
+                        </TodaysTodosListContainer>
+                        
+                        <TodaysTodosListContainer>
+                            <TodosListTitleContainer>
+                                <span>Completed</span>
+                            </TodosListTitleContainer>
+                            <TodaysTodosList>
+                                {
+                                    completedTodos.length ? (
+                                    completedTodos.map(todo => {
+                                        return <Todo key={todo.id} todo={todo} />
+                                    }) 
+                                    ) : (
+                                        <span> No Todos Completed Yet </span>
+                                    )
+                                }
+                            </TodaysTodosList>
+                        </TodaysTodosListContainer>
+                    </TodaysScheduleContainer>
+                ) : (
+                    <h2>Login to see today's todos</h2>
+                )
+            }
+        </HomePageContainer>
     );  
 }
 

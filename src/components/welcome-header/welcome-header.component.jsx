@@ -1,21 +1,41 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 
 import { auth, signOut } from "../../firebase/firebase.utils";
 
-import './welcome-header.styles.css';
+import BackArrow from '../../assets/left-arrow.svg';
+
+import {
+    WelcomeHeaderContainer,
+    WelcomeHeaderLink,
+    BackToHomeLinkContainer,
+    BackToHomeArrow,
+    WelcomeHeaderLinksContainer,
+} from './welcome-header.styles';
 
 const WelcomeHeader = ({ currentUser }) => {
     return (
-        <div className="welcome-header">
-            {
-                currentUser 
-                    ?  <div onClick={() => signOut(auth)}>Logout</div> 
-                    : <Link className="welcome-header-link" to="/register">Register / Login</Link>
-            }
-            
-        </div>
+        <WelcomeHeaderContainer>
+            <BackToHomeLinkContainer>
+                {
+                    currentUser ?
+                    <>
+                        <BackToHomeArrow src={BackArrow} alt="back arrow" />
+                        <WelcomeHeaderLink to="/main/home">Back to Home</WelcomeHeaderLink>
+                    </>
+                    : null
+                }
+            </BackToHomeLinkContainer>
+            <WelcomeHeaderLinksContainer>
+                {
+                    currentUser 
+                        ?  <WelcomeHeaderLink as="div" onClick={() => signOut(auth)}>Logout</WelcomeHeaderLink>
+                        
+
+                        : <WelcomeHeaderLink to="/register">Register / Login</WelcomeHeaderLink>
+                }
+            </WelcomeHeaderLinksContainer>
+        </WelcomeHeaderContainer>
     );
 }
 

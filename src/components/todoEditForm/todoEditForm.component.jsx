@@ -1,7 +1,5 @@
 import React, {useState} from "react";
 
-import './todoEditForm.styles.css';
-
 const TodoEditForm = ({ edit, submitEdit }) => {
     const [input, setInput] = useState(edit ? edit.value : '');
 

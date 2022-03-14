@@ -3,17 +3,19 @@ import React, { useState } from "react";
 import { auth, signOut } from "../../firebase/firebase.utils";
 
 import Menu from '../../assets/menu.svg';
-import Home from '../../assets/home.svg';
-import Schedule from '../../assets/schedule.svg';
-import History from '../../assets/history.svg';
+import Home from '../../assets/home-svg.svg';
+import Calendar from '../../assets/calendar-svg.svg';
+import Logout from '../../assets/logout.svg';
 import Progress from '../../assets/graph.svg';
+import Setup from '../../assets/setup.svg';
 
 import {
     SidbarContainer,
     Slickbar,
     Item,
     Text,
-    Button
+    Button,
+    BottomItemsContainer,
 } from './sidebar.styles';
 
 const Sidebar = () => {
@@ -41,17 +43,8 @@ const Sidebar = () => {
                     activeclassname="active"
                     to="/main/schedule"
                 >
-                    <img src={Schedule} alt='Schedule' />
-                    <Text clicked={clickStatus}>Schedule</Text>
-                </Item>
-                <Item
-                    className="item"
-                    onClick={() => setClickStatus(false)}
-                    activeclassname="active"
-                    to="/main/history"
-                >
-                    <img src={History} alt='History' />
-                    <Text clicked={clickStatus}>History</Text>
+                    <img src={Calendar} alt='Calendar' />
+                    <Text clicked={clickStatus}>Calendar</Text>
                 </Item>
                 <Item
                     className="item"
@@ -62,18 +55,29 @@ const Sidebar = () => {
                     <img src={Progress} alt='Progress' />
                     <Text clicked={clickStatus}>Progress</Text>
                 </Item>
-                <Item
-                    className="item"
-                    onClick={() => {
-                        setClickStatus(false);
-                        signOut(auth);
-                    }}
-                    activeclassname="active"
-                    to="/"
-                >
-                    <img src={Progress} alt='Progress' />
-                    <Text clicked={clickStatus}>Logout</Text>
-                </Item>
+                <BottomItemsContainer>
+                    <Item
+                        className="item bottom-item"
+                        onClick={() => setClickStatus(false)}
+                        activeclassname="active"
+                        to="/"
+                    >
+                        <img src={Setup} alt='Setup' />
+                        <Text clicked={clickStatus}>Set Up</Text>
+                    </Item>
+                    <Item
+                        className="item bottom-item"
+                        onClick={() => {
+                            setClickStatus(false);
+                            signOut(auth);
+                        }}
+                        activeclassname="active"
+                        to="/"
+                    >
+                        <img src={Logout} alt='Logout' />
+                        <Text clicked={clickStatus}>Logout</Text>
+                    </Item>
+                </BottomItemsContainer>
             </Slickbar>
         </SidbarContainer>
     );

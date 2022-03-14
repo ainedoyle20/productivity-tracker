@@ -5,7 +5,19 @@ import { completeTodo, deleteTodo, editTodo } from '../../redux/todos/todos.acti
 
 import TodoEditForm from '../todoEditForm/todoEditForm.component';
 
-import './todo.styles.css';
+import StarIcon from '../../assets/star-icon.svg';
+import TickIcon from '../../assets/tick-icon.svg';
+import EditIcon from '../../assets/edit-icon.svg';
+import DeleteIcon from '../../assets/delete-icon.svg';
+
+import {
+    TodoContainer,
+    TodoDescriptionContainer,
+    TodoStarIcon,
+    TodoDescription,
+    TodoIconsContainer,
+    TodoActionIcon
+} from './todo.styles';
 
 const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
 
@@ -31,23 +43,26 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
     const { description } = todo;
     return (
         <>
-           <li className="todo-container">
-                <p className="todo-description">{description}</p>
-                <div className="icon-container">
-                    <span className="todo-icon" onClick={() => {
-                        completeTodo(todo);
-                    }}>
-                        done
-                    </span> 
-                    <span className="todo-icon" onClick={() => setEdit({ id: todo.id, value: description })}>
-                        edit
-                    </span> 
-                    <span className="todo-icon" onClick={() => deleteTodo(todo)}>
-                        delete
-                    </span>  
-                </div>
-                
-            </li> 
+           <TodoContainer>
+               <TodoDescriptionContainer>
+                   <TodoStarIcon src={StarIcon} alt="star"/>
+                   <TodoDescription>{description}</TodoDescription>  
+               </TodoDescriptionContainer>
+                <TodoIconsContainer>
+                    <TodoActionIcon 
+                        src={TickIcon} alt="tick button"
+                        onClick={() => completeTodo(todo)}
+                    />
+                    <TodoActionIcon 
+                        src={EditIcon} alt="edit button"
+                        onClick={() => setEdit({ id: todo.id, value: description })}
+                    />
+                    <TodoActionIcon 
+                        src={DeleteIcon} alt="delete button"
+                        onClick={() => deleteTodo(todo)}
+                    />
+                </TodoIconsContainer>
+            </TodoContainer> 
         </>
             
     );
