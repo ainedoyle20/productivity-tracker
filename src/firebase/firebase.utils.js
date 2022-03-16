@@ -50,23 +50,17 @@ export const fetchTodosForCurrentDay = async (currentUserId, date) => {
     const todosSnap = await getDoc(todosRef);
 
     if (!todosSnap.exists()) {
-        console.log('no todos documents for this user');
         setTodoDoc(currentUserId, date);
         const firebaseTodos = [];
         const firebaseCompletedTodos =  [];
         return {firebaseTodos, firebaseCompletedTodos};
     } else {
         const todos = todosSnap.data();
-        console.log('todos[date] ', todos[date]);
         if (todos[date]) {
-            console.log('todos[date] is true');
             const firebaseTodos = todos[date]['todos'];
             const firebaseCompletedTodos =  todos[date]['completedTodos'];
-            // console.log('firebase todos: ', firebaseTodos);
-            // console.log('firebase completedTodos: ', firebaseCompletedTodos);
             return {firebaseTodos, firebaseCompletedTodos};  
         } else {
-            console.log('todos[date] is false');
             updateTodosForCurrentDay(currentUserId, date, [], []);
             const firebaseTodos = [];
             const firebaseCompletedTodos =  [];
@@ -91,16 +85,6 @@ export const firebasePercentagesCheck = async (currentUserId, date, daysInMonth)
     if (!percentages[monthField]) {
         createNewMonthField(currentUserId, monthField, daysInMonth);
         return;
-
-        // console.log('there is a monthfield here');
-        // if (!percentages[monthField][dateKey] && percentages[monthField][dateKey] !== 0) {
-        //     console.log('no todays date here');
-        //     createPercentageKey(currentUserId, monthField, dateKey);
-        //     return;
-        // } else {
-        //     console.log('todays date is here');
-        //     return;
-        // }
     }
     return;
 }

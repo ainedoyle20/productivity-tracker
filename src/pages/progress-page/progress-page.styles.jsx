@@ -6,13 +6,19 @@ export const ProgressPageContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 15vh;
 `;
 
 export const ProgressPageTitleContainer = styled.div`
-    width: 30vw;
+    width: 50vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media screen and (max-width: 800px) {
+        width: 60vw;
+        font-size: 12px;
+    }
 `;
 
 export const ProgressPageButton = styled.button`
@@ -31,5 +37,6 @@ export const ProgressPageButton = styled.button`
 
 export const NoChartDataMessageContainer = styled.div`
     position: absolute;
+    top: 45vh;
     display: ${props => props.chartData ? 'none' : 'flex'};
 `;

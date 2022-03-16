@@ -1,4 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect} from "react";
+import { connect } from 'react-redux';
+
+import { toggleScrollButton } from "../../redux/scrollButton/scrollButton.actions";
 
 import WelcomeHeader from '../../components/welcome-header/welcome-header.component'; 
 import Welcome from "../../components/welcome/welcome.compoonent";
@@ -6,20 +9,19 @@ import InstructionStep from "../../components/instruction-step/instruction-step.
 
 import UpArrow from '../../assets/up-arrow.svg';
 
-import { BackToTopContainer } from './landing-page.styles.jsx';
+import { LandingPageContainer, BackToTopContainer } from './landing-page.styles.jsx';
 
-const LandingPage = () => {
-    const [showButton, setShowButton] = useState(false);
+const LandingPage = ({ showScrollButton, toggleScrollButton}) => {
 
     useEffect(() => {
         window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
-                setShowButton(true);
+                toggleScrollButton(true);
             } else {
-                setShowButton(false);
+                toggleScrollButton(false);
             }
         });
-    }, []);
+    }, [toggleScrollButton]);
 
     const scrollToTop = () => {
         window.scrollTo({
@@ -35,8 +37,8 @@ const LandingPage = () => {
     }
 
     return (
-        <div>
-            <WelcomeHeader />
+        <LandingPageContainer>
+            <WelcomeHeader/>
             <Welcome />
             {
                 Object.keys(instructions).map(key => {
@@ -44,14 +46,22 @@ const LandingPage = () => {
                 })
             }
             {
-                showButton && (
+                showScrollButton && (
                     <BackToTopContainer onClick={scrollToTop}>
                         <img src={UpArrow} alt="up arrow"  />
                     </BackToTopContainer>
                 )
             }
-        </div>
+        </LandingPageContainer>
     );
 }
 
-export default LandingPage;
+const mapStateToProps = ({ scrollButton }) => ({
+    showScrollButton: scrollButton.showScrollButton,
+});
+
+const mapDispatchToProps = dispatch => ({
+    toggleScrollButton: (conditional) => dispatch(toggleScrollButton(conditional)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

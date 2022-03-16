@@ -5,6 +5,10 @@ export const TodoContainer = styled.li`
     width: 60%;
     display: flex;
     justify-content: space-between;
+
+    @media screen and (max-width: 800px) {
+        width: 95%;
+    }
 `;
 
 export const TodoDescriptionContainer = styled.div`

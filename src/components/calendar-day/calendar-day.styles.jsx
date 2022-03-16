@@ -17,6 +17,16 @@ export const CalendarDayContainer = styled.div`
     &:hover {
         background-color: ${props => props.padding ? 'rgb(228, 228, 228)' : '#e8faed'};
     }
+
+    @media screen and (max-width: 800px) {
+        width: 60px;
+        height: 60px;
+    }
+
+    @media screen and (max-width: 499px) {
+        width: 40px;
+        height: 40px;
+    }
 `;
 
 

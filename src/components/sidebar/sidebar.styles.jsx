@@ -16,6 +16,10 @@ export const SidbarContainer = styled.div`
     justify-content: space-between;
     position: fixed;
     left: 0;
+
+    @media screen and (max-width: 800px) {
+        width: 0;
+    }
 `;
 
 export const Slickbar = styled.div`
@@ -43,6 +47,12 @@ export const Slickbar = styled.div`
           filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg)
             brightness(0%) contrast(103%);
         }
+    }
+
+    @media screen and (max-width: 800px) {
+        width: ${(props) => (props.clicked ? "12rem" : "0")};
+        top: 15%;
+        border: 1px solid rgb(205, 205, 205);
     }
 `;
 
@@ -73,7 +83,13 @@ export const Item = styled(NavLink)`
             brightness(78%) contrast(85%);
         filter: invert(92%) sepia(4%) saturate(1033%) hue-rotate(169deg)
         brightness(20%) contrast(85%);
-    }    
+    }
+    
+    @media screen and (max-width: 800px) {
+        img {
+            display: none;
+        }
+    }
 `;
 
 export const BottomItemsContainer = styled.div`
@@ -110,4 +126,10 @@ export const Button = styled.button`
         filter: invert(92%) sepia(4%) saturate(1033%) hue-rotate(169deg)
             brightness(0%) contrast(85%);
     } 
+
+    @media screen and (max-width: 800px) {
+        position: fixed;
+        top: 15px;
+        left: 5px;
+    }
 `;

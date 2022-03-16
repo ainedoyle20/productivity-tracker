@@ -58,7 +58,6 @@ const Sidebar = () => {
                 <BottomItemsContainer>
                     <Item
                         className="item bottom-item"
-                        onClick={() => setClickStatus(false)}
                         activeclassname="active"
                         to="/"
                     >
@@ -66,13 +65,12 @@ const Sidebar = () => {
                         <Text clicked={clickStatus}>Set Up</Text>
                     </Item>
                     <Item
+                        to="/"
                         className="item bottom-item"
                         onClick={() => {
-                            setClickStatus(false);
                             signOut(auth);
                         }}
                         activeclassname="active"
-                        to="/"
                     >
                         <img src={Logout} alt='Logout' />
                         <Text clicked={clickStatus}>Logout</Text>

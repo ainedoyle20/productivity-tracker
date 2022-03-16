@@ -21,12 +21,12 @@ import {
 } from './home-page.styles';
 
 const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate, todosChanged, percentageComplete, updatePercentage }) => {
+    const [textInput, setTextInput] = useState('');
+
     useEffect(() => {
         const currentUserId = currentUser ? currentUser.id : null;
-        console.log('running useEffect outside');
         if (currentUserId) {
            updateTodosForCurrentDay(currentUserId, currentDate, todos, completedTodos); 
-           console.log('running useEffect');
         }
         updatePercentage();
     }, [todosChanged, todos, completedTodos]);
@@ -37,13 +37,7 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
             updatePercentageValue(currentUserId, currentDate, percentageComplete);
         }
     }, [percentageComplete]);
-
-
-    const [textInput, setTextInput] = useState('');
-
-    console.log('todos: ', todos);
-    console.log('completedTodos: ', completedTodos);
-    console.log('percentageComplete: ', percentageComplete);
+    
     return (
         <HomePageContainer>
             {

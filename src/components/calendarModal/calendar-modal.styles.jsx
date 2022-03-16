@@ -6,11 +6,17 @@ export const CalendarModalContainer = styled.div`
     position: absolute;
     left: 35vw;
     z-index: 10;
-    min-width: 400px;
+    width: 400px;
     min-height: 400px;
     background-color: white;
     border: 2px solid black;
     border-radius: 10%;
+
+    @media screen and (max-width: 800px) {
+        width: 250px;
+        min-height: 350px;
+        left: 25vw;
+    }
 `;
 
 export const CalendarModalHeader = styled.div`

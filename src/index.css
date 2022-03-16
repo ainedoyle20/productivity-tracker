@@ -3,12 +3,3 @@ body {
   padding: 0;
   background-color: rgb(228, 228, 228);
 }
-
-a {
-  text-decoration: none;
-  color: black;
-}
-
-* {
-  box-sizing: border-box;
-}

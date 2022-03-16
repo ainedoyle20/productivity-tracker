@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, Suspense} from 'react';
 import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 
@@ -9,15 +9,17 @@ import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth, fetchT
 
 import { setCurrentUser } from './redux/user/user.actions';
 
-import LandingPage from './pages/landing-page/landing-page.component';
-import RegisterAndLoginPage from './pages/register-and-login-page/register-and-login-page.component';
-import MainPage from './pages/main-page/main-page.component';
+import ErrorBoundary from './components/error-boundary/error-boundary.component';
 
-import './App.styles.jsx';
+import { GlobalStyle } from './global.styles.jsx';
 
-const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate, todos, completedTodos}) => {
+const LandingPage = React.lazy(() => import('./pages/landing-page/landing-page.component'));
+const RegisterAndLoginPage = React.lazy(() => import('./pages/register-and-login-page/register-and-login-page.component'));
+const MainPage = React.lazy(() => import('./pages/main-page/main-page.component'));
 
-  useEffect(async () => {
+const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate, }) => {
+
+  useEffect(() => {
     if (currentUser) {
       const currentUserId = currentUser.id;
       console.log('currentUserId: ', currentUserId);
@@ -30,17 +32,19 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
       const currentDate = `${day}-${month + 1}-${year}`;
-      console.log('currentDate: ', currentDate);
       setCurrentDate(currentDate);
 
       firebasePercentagesCheck(currentUserId, currentDate, daysInMonth);
 
-      const {firebaseTodos, firebaseCompletedTodos} = await fetchTodosForCurrentDay(currentUserId, currentDate);
-      updateCompletedTodos(firebaseCompletedTodos); 
-      updateIncompletedTodos(firebaseTodos);
-    }
-  }, [currentUser]);
+      const fetchFirebaseTodos = async () => {
+        const {firebaseTodos, firebaseCompletedTodos} = await fetchTodosForCurrentDay(currentUserId, currentDate);
+        updateCompletedTodos(firebaseCompletedTodos); 
+        updateIncompletedTodos(firebaseTodos);
+      }
 
+      fetchFirebaseTodos();
+    }
+  }, [currentUser, setCurrentDate, updateCompletedTodos, updateIncompletedTodos]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async userAuth => {
@@ -53,21 +57,27 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
             ...snapShot.data()
           })
         });
+
       } else {
         setCurrentUser(userAuth);
       }
     });
-
+    
     return unsub;
-  }, []);
+  }, [setCurrentUser]);
 
   return (
     <div>
-      <Routes>
-        <Route exact path="/" element={<LandingPage/>} />
-        <Route path="/register" element={<RegisterAndLoginPage/>} />
-        <Route path="/main/*" element={<MainPage />} />
-      </Routes>
+      <GlobalStyle/>
+      <ErrorBoundary>
+        <Suspense fallback={<h2>Loading...</h2>}>
+          <Routes>
+            <Route exact path="/" element={<LandingPage/>} />
+            <Route path="/register" element={<RegisterAndLoginPage/>} />
+            <Route path="/main/*" element={<MainPage />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </div>
   ); 
 };

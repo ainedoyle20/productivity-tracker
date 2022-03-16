@@ -7,6 +7,10 @@ export const LoginContainer = styled.div`
     flex-direction: column;
     align-items: center;
     border-radius: 10%;
+
+    @media screen and (max-width: 800px) {
+        width: 90vw;
+    }
 `;
 
 export const LoginTitle = styled.h2`

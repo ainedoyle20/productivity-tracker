@@ -3,6 +3,7 @@ import UserActionTypes from './user.types';
 const INITIAL_STATE = {
     showLogin: false,
     currentUser: null,
+    firebaseSub: false,
 }
 
 const userReducer = (state=INITIAL_STATE, action) => {
@@ -16,6 +17,16 @@ const userReducer = (state=INITIAL_STATE, action) => {
             return {
                 ...state,
                 currentUser: action.payload
+            }
+        case UserActionTypes.OPEN_SUB:
+            return {
+                ...state,
+                firebaseSub: true,
+            }
+        case UserActionTypes.CLOSE_SUB:
+            return {
+                ...state,
+                firebaseSub: false,
             }
         default :
             return state;

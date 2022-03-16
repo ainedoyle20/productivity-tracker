@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const LandingPageContainer = styled.div`
+
+`;
+
 export const BackToTopContainer = styled.div`
     border-bottom: 1px solid black;
     position: fixed;

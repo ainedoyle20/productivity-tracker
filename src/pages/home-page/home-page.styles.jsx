@@ -18,13 +18,27 @@ export const TodaysScheduleContainer = styled.div`
     align-items: center;
     overflow-y: scroll;
     overflow-x: hidden;
+
+    @media screen and (max-width: 800px) {
+        width: 80vw;
+    }
 `;
 
 export const TodaysTodosHeader = styled.div`
-    width: 60%;
+    width: 70%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 50px;
+
+    @media screen and (max-width: 800px) {
+        width: 100%;
+
+        h1 {
+            font-size: 25px;
+        }
+    }
 `;
 
 export const CreateTodoContainer = styled.div`
@@ -32,14 +46,15 @@ export const CreateTodoContainer = styled.div`
     justify-content: center;
     align-items: center;
     padding-left: 20px;
+    width: 100%;
 `;
 
 export const CreateTodoInput = styled.input`
-    height: 40%;
     border: none;
     border-bottom: 1px solid black;
-    padding: 0 10px;
+    padding: 10px 10px;
     margin-right: 10px;
+    width: 50%;
 
     &:focus {
         outline: none;

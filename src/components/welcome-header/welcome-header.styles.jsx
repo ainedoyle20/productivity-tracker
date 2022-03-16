@@ -2,10 +2,9 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const WelcomeHeaderContainer = styled.div`
-    position: absolute;
-    top: 0;
     width: 100%;
     height: 10%;
+    padding-top: 20px;
     display: flex;
     align-items: center;
 `;

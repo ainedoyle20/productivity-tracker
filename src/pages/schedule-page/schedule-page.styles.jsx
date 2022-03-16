@@ -11,6 +11,14 @@ export const SchedulePageContainer = styled.div`
 
 export const CalendarPlatform = styled.div`
     width: 770px;
+
+    @media screen and (max-width: 800px) {
+        width: 490px;
+    }
+
+    @media screen and (max-width: 499px) {
+        width: 350px;
+    }
 `;
 
 export const WeekdaysContainer = styled.div`
@@ -23,6 +31,16 @@ export const WeekdaysContainer = styled.div`
         padding: 10px;
         display: flex;
         justify-content: center;
+
+        @media screen and (max-width: 800px) {
+            width: 70px;
+            font-size: 10px;
+        }
+
+        @media screen and (max-width: 499px) {
+            width: 50px;
+            font-size: 8px;
+        }
     }
 `;
 

@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from "react";
 import { connect } from 'react-redux';
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 import { registerWithEmailAndPassword, createUserProfileDocument, auth, signInWithEmailAndPassword } from "../../firebase/firebase.utils";
 
 import Register from "../../components/register/register.component";
 import Login from '../../components/login/login.component';
 
-import { RegisterAndLoginPageContainer } from './register-and-login-page.styles';
+import BackArrow from '../../assets/left-arrow.svg';
+
+import { RegisterAndLoginPageContainer, BackToSetupLinkContainer } from './register-and-login-page.styles';
 
 const RegisterAndLoginPage = ({ currentUser }) => {
     const [formData, setFormData] = useState({
@@ -30,7 +33,7 @@ const RegisterAndLoginPage = ({ currentUser }) => {
         if(currentUser) {
             redirectToHome();
         }
-    }, [currentUser]);
+    });
 
     const toggleLogin = () => {
         setShowLogin(!showLogin);
@@ -57,14 +60,6 @@ const RegisterAndLoginPage = ({ currentUser }) => {
         try {
             const {user} = await registerWithEmailAndPassword(registerEmail, registerPassword); 
             setIsLoading(false);
-            setFormData({
-                displayName: '',
-                registerEmail: '',
-                registerPassword: '',
-                loginEmail: '',
-                loginPassword: '',
-                confirmPassword: '',
-            });
             await createUserProfileDocument(user, {displayName});
         } catch (error) {
             alert('This email is already in use.');
@@ -100,6 +95,10 @@ const RegisterAndLoginPage = ({ currentUser }) => {
 
     return (
         <RegisterAndLoginPageContainer>
+            <BackToSetupLinkContainer>
+                <img src={BackArrow} alt="back arrow" />
+                <Link to='/'>Back to Setup</Link>
+            </BackToSetupLinkContainer>
             {
                 showLogin 
                 ? <Login formData={formData} onLogin={onLogin} onChange={onChange} toggleLogin={toggleLogin} isLoading={isLoading}/> 
