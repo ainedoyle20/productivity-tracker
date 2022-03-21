@@ -29,14 +29,14 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
            updateTodosForCurrentDay(currentUserId, currentDate, todos, completedTodos); 
         }
         updatePercentage();
-    }, [todosChanged, todos, completedTodos]);
+    }, [todosChanged, todos, completedTodos, currentDate, currentUser, updatePercentage]);
 
     useEffect(() => {
         const currentUserId = currentUser ? currentUser.id : null;
         if (currentUserId) {
             updatePercentageValue(currentUserId, currentDate, percentageComplete);
         }
-    }, [percentageComplete]);
+    }, [percentageComplete, currentDate, currentUser]);
     
     return (
         <HomePageContainer>
@@ -55,7 +55,6 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
                                 <CreateTodaysTodoButton onClick={() =>{
                                     createTodo(textInput);
                                     setTextInput('');
-                                    console.log('clicked')
                                 }}>
                                     <img className="plus-icon" src={PlusIcon} alt="plus" />
                                 </CreateTodaysTodoButton>

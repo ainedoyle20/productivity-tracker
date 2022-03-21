@@ -15,7 +15,7 @@ export const TodoDescriptionContainer = styled.div`
     display: flex;
     align-items: center;
     width: 70%;
-    cursor: none;
+    cursor: default;
 `;
 
 export const TodoStarIcon = styled.img`

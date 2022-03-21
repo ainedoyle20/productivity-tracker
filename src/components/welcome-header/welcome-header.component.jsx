@@ -12,7 +12,7 @@ import {
     BackToHomeArrow,
     WelcomeHeaderLinksContainer,
 } from './welcome-header.styles';
-
+ 
 const WelcomeHeader = ({ currentUser }) => {
     return (
         <WelcomeHeaderContainer>
@@ -29,7 +29,9 @@ const WelcomeHeader = ({ currentUser }) => {
             <WelcomeHeaderLinksContainer>
                 {
                     currentUser 
-                        ?  <WelcomeHeaderLink as="div" onClick={() => signOut(auth)}>Logout</WelcomeHeaderLink>
+                        ?  <WelcomeHeaderLink as="div" onClick={() => {
+                                signOut(auth);
+                            }}>Logout</WelcomeHeaderLink>
                         
 
                         : <WelcomeHeaderLink to="/register">Register / Login</WelcomeHeaderLink>

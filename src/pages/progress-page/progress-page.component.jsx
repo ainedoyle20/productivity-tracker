@@ -44,7 +44,7 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
             runAsyncFunc();
         }
 
-    }, [currentUser, progressNav]);
+    }, [currentUser, progressNav, currentDate, setProgressDateDisplay]);
 
     return (
         <ProgressPageContainer>

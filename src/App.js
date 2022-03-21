@@ -17,12 +17,11 @@ const LandingPage = React.lazy(() => import('./pages/landing-page/landing-page.c
 const RegisterAndLoginPage = React.lazy(() => import('./pages/register-and-login-page/register-and-login-page.component'));
 const MainPage = React.lazy(() => import('./pages/main-page/main-page.component'));
 
-const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate, }) => {
+const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate}) => {
 
   useEffect(() => {
     if (currentUser) {
       const currentUserId = currentUser.id;
-      console.log('currentUserId: ', currentUserId);
 
       const dt = new Date();
       const day = dt.getDate();
@@ -75,6 +74,7 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
             <Route exact path="/" element={<LandingPage/>} />
             <Route path="/register" element={<RegisterAndLoginPage/>} />
             <Route path="/main/*" element={<MainPage />} />
+            <Route path="*" element={<LandingPage/>} />
           </Routes>
         </Suspense>
       </ErrorBoundary>

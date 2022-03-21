@@ -29,7 +29,6 @@ export const checkForTodosItem = async (currentUserId, date) => {
     const todos = todosSnap.data();
 
     if (!todos[date]) {
-        console.log('no todo item here');
         setTodoItem(currentUserId, date);
         return false;
     } else {
@@ -124,20 +123,6 @@ export const fetchDatesAndPercentages = async (currentUserId, monthField) => {
     }
 }
 
-// const createPercentageKey = async (currentUserId, monthField, dateKey) => {
-//     const docRef = doc(db, 'percentages', currentUserId);
-
-//     try {
-//         await updateDoc(docRef, {
-//             [monthField]: {
-//                 [dateKey]: 0,
-//             }
-//         });
-//     } catch (error) {
-//         console.log('error creating percentage key: ', error.message);
-//     }
-// }
-
 export const updatePercentageValue = async (currentUserId, date, todosPercentage) => {
     const percentagesRef = doc(db, 'percentages', currentUserId);
     const percentagesSnap = await getDoc(percentagesRef);
@@ -183,7 +168,6 @@ export const saveCalendarTodosToFirebase = async (currentUserId, date, calendarT
     }
 
     const docRef = doc(db, 'todos', currentUserId);
-    console.log('got here');
 
     try {
         await updateDoc(docRef, {

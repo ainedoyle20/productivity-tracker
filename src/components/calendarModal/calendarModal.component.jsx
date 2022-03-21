@@ -29,7 +29,7 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
         if (todosAvailable) {
             const firebaseTodos = await getCalendarTodos(currentUser.id, selectedDate);
             setCalendarTodos(firebaseTodos);
-        }
+        }  
     }
     
     useEffect(() => {
@@ -57,12 +57,18 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
     }
 
     const deleteCalendarTodo = (todoId, todosList) => {
-        console.log('todoId: ', todoId);
         let todosArr = todosList.filter(todo => todo.id !== todoId);
         setCalendarTodos(todosArr);
     }
 
-    console.log('calendarTodos: ', calendarTodos);
+    const closeModal = async () => {
+        if (calendarTodos.length && isPastDate !== true) {
+            await saveCalendarTodosToFirebase(currentUser.id, selectedDate, calendarTodos); 
+        }
+        setCalendarTodos([]);
+        toggleHidden();
+    }
+
     return (
         <CalendarModalContainer>
             <CalendarModalHeader>
@@ -71,10 +77,13 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
                     onChange={e => setCalendarInput(e.target.value)}
                     value={calendarInput}
                 /> 
-                <CalendarModalCreateTodoButton disabled={isPastDate}
+                <CalendarModalCreateTodoButton
                     onClick={() => {
-                        console.log('calendarTodos: ', calendarTodos);
-                        createCalendarTodo(calendarInput, calendarTodos);
+                        if (isPastDate !== true) {
+                            createCalendarTodo(calendarInput, calendarTodos);  
+                        } else {
+                            alert('Sorry, past todos cannot be scheduled or altered.');
+                        }
                         setCalendarInput('');
                     }}
                 >
@@ -88,7 +97,13 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
                     calendarTodos.length > 0 ? calendarTodos.map(obj => {
                         return (<CalendarModalTodoContainer key={obj.id}>
                         <li key={obj.id}>{obj.description}</li>
-                        <img className="display-todo-icon" onClick={() => deleteCalendarTodo(obj.id, calendarTodos)} src={DeleteIcon} alt="delete"/>
+                        <img className="display-todo-icon" onClick={() => {
+                            if (isPastDate !== true) {
+                               deleteCalendarTodo(obj.id, calendarTodos); 
+                            } else {
+                                alert('Sorry, past todos cannot be scheduled or altered.');
+                            }
+                        }} src={DeleteIcon} alt="delete"/>
                         </CalendarModalTodoContainer>)
                     }) : <span>No todos</span>
                 }
@@ -96,11 +111,7 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
             <CloseModalButtonContainer>
                 <CloseModalButton
                     onClick={() => {
-                        toggleHidden();
-                        if (calendarTodos.length && isPastDate !== true) {
-                        saveCalendarTodosToFirebase(currentUser.id, selectedDate, calendarTodos); 
-                        }
-                        setCalendarTodos([]);
+                        closeModal();
                     }}
                 >
                     Close
