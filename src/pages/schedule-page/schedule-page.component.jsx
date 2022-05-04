@@ -1,5 +1,8 @@
 import React, {useEffect} from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { selectCurrentUser } from "../../redux/user/user.selectors";
+import { selectCalendarNav, selectCalendarDateDisplay } from "../../redux/calendar/calendar.selectors";
 
 import {setDateDisplay, setDays} from '../../redux/calendar/calendar.actions';
 
@@ -12,7 +15,11 @@ import {
     WeekdaysContainer
 } from './schedule-page.styles';
 
-const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays, currentUser }) => {
+const SchedulePage = () => {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+    const nav = useSelector(selectCalendarNav);
+    const dateDisplay = useSelector(selectCalendarDateDisplay);
 
     useEffect(() => {
         const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -35,7 +42,7 @@ const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays, currentUser }
             day: 'numeric',
         });
 
-        setDateDisplay(`${dt.toLocaleDateString('en-gb', { month: 'long' })} ${year}`);
+        dispatch(setDateDisplay(`${dt.toLocaleDateString('en-gb', { month: 'long' })} ${year}`));
 
         const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
 
@@ -61,7 +68,7 @@ const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays, currentUser }
             }
         }
       
-        setDays(daysArr);
+        dispatch(setDays(daysArr));
     }, [nav]);
 
     return (
@@ -96,15 +103,4 @@ const SchedulePage = ({ dateDisplay, nav, setDateDisplay, setDays, currentUser }
     );
 }
 
-const mapStateToProps = ({ calendar, user }) => ({
-    nav: calendar.nav,
-    dateDisplay: calendar.dateDisplay,
-    currentUser: user.currentUser,
-});
-
-const mapDispatchToProps = dispatch => ({
-    setDateDisplay: (date) => dispatch(setDateDisplay(date)),
-    setDays: (daysArr) => dispatch(setDays(daysArr)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SchedulePage);
+export default SchedulePage;

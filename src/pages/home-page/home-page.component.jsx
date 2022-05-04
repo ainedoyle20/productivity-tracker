@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { updateTodosForCurrentDay, updatePercentageValue } from '../../firebase/firebase.utils';
 
-import Todo from '../../components/todo/todo.component';
-import PlusIcon from '../../assets/plus-icon.svg';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectCurrentDate } from '../../redux/calendar/calendar.selectors';
+import { selectCompletedTodos, selectIncompleteTodos, selectTodosChanged, selectPercentageCompleted } from '../../redux/todos/todos.selectors';
 
 import {createTodo, updatePercentage} from '../../redux/todos/todos.actions';
+
+import Todo from '../../components/todo/todo.component';
+import PlusIcon from '../../assets/plus-icon.svg';
 
 import {
     HomePageContainer,
@@ -20,7 +24,15 @@ import {
     TodaysTodosList,
 } from './home-page.styles';
 
-const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate, todosChanged, percentageComplete, updatePercentage }) => {
+const HomePage = () => {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+    const currentDate = useSelector(selectCurrentDate);
+    const todos = useSelector(selectIncompleteTodos);
+    const completedTodos = useSelector(selectCompletedTodos);
+    const todosChanged = useSelector(selectTodosChanged);
+    const percentageComplete = useSelector(selectPercentageCompleted);
+
     const [textInput, setTextInput] = useState('');
 
     useEffect(() => {
@@ -28,15 +40,15 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
         if (currentUserId) {
            updateTodosForCurrentDay(currentUserId, currentDate, todos, completedTodos); 
         }
-        updatePercentage();
-    }, [todosChanged, todos, completedTodos, currentDate, currentUser, updatePercentage]);
+        dispatch(updatePercentage());
+    }, [todosChanged, todos, completedTodos]);
 
     useEffect(() => {
         const currentUserId = currentUser ? currentUser.id : null;
         if (currentUserId) {
             updatePercentageValue(currentUserId, currentDate, percentageComplete);
         }
-    }, [percentageComplete, currentDate, currentUser]);
+    }, [percentageComplete]);
     
     return (
         <HomePageContainer>
@@ -53,7 +65,7 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
                                     onChange={(e) => setTextInput(e.target.value)}
                                 />
                                 <CreateTodaysTodoButton onClick={() =>{
-                                    createTodo(textInput);
+                                    dispatch(createTodo(textInput));
                                     setTextInput('');
                                 }}>
                                     <img className="plus-icon" src={PlusIcon} alt="plus" />
@@ -103,18 +115,4 @@ const HomePage = ({ todos, completedTodos, createTodo, currentUser, currentDate,
     );  
 }
 
-const mapStateToProps = ({ user, calendar, todos }) => ({
-    currentUser: user.currentUser,
-    currentDate: calendar.currentDate,
-    todos: todos.todos,
-    completedTodos: todos.completedTodos,
-    todosChanged: todos.todosChanged,
-    percentageComplete: todos.percentageComplete,
-});
-
-const mapDispatchToProps = dispatch => ({
-    createTodo: (textInput) => dispatch(createTodo(textInput)),
-    updatePercentage: () => dispatch(updatePercentage()),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default HomePage;

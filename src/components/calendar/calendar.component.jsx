@@ -1,12 +1,17 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
+
+import { selectDays, selectHiddenValue } from '../../redux/calendar/calendar.selectors';
 
 import CalendarDay from "../calendar-day/calendar-day.component";
 import CalendarModal from '../calendarModal/calendarModal.component';
 
 import { CalendarContainer } from './calendar.styles';
 
-const Calendar = ({ days, hidden }) => {
+const Calendar = () => {
+    const days = useSelector(selectDays);
+    const hidden = useSelector(selectHiddenValue);
+
     return (
         <CalendarContainer>
             {days.map((d, index) => (
@@ -23,9 +28,4 @@ const Calendar = ({ days, hidden }) => {
     );
 }
 
-const mapStateToProps = ({ calendar }) => ({
-    days: calendar.days,
-    hidden: calendar.hidden,
-});
-
-export default connect(mapStateToProps)(Calendar);
+export default Calendar;

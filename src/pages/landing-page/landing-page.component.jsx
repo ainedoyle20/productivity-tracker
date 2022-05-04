@@ -1,7 +1,4 @@
-import React, {useEffect} from "react";
-import { connect } from 'react-redux';
-
-import { toggleScrollButton } from "../../redux/scrollButton/scrollButton.actions";
+import React, {useEffect, useState} from "react";
 
 import WelcomeHeader from '../../components/welcome-header/welcome-header.component'; 
 import Welcome from "../../components/welcome/welcome.compoonent";
@@ -11,17 +8,26 @@ import UpArrow from '../../assets/up-arrow.svg';
 
 import { LandingPageContainer, BackToTopContainer } from './landing-page.styles.jsx';
 
-const LandingPage = ({ showScrollButton, toggleScrollButton}) => {
+const LandingPage = () => {
+    const [ showScrollButton, setShowScrollButton ] = useState(false);
+
+    const toggleVisibility = () => {
+        if (window.pageYOffset > 400) {
+            setShowScrollButton(true);
+
+        } else {
+            setShowScrollButton(false);
+        }
+    }
 
     useEffect(() => {
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                toggleScrollButton(true);
-            } else {
-                toggleScrollButton(false);
-            }
-        });
-    }, [toggleScrollButton]);
+        window.addEventListener('scroll', toggleVisibility);
+
+        return () => {
+            window.removeEventListener('scroll', toggleVisibility);
+        }
+
+    }, []);
 
     const scrollToTop = () => {
         window.scrollTo({
@@ -56,12 +62,4 @@ const LandingPage = ({ showScrollButton, toggleScrollButton}) => {
     );
 }
 
-const mapStateToProps = ({ scrollButton }) => ({
-    showScrollButton: scrollButton.showScrollButton,
-});
-
-const mapDispatchToProps = dispatch => ({
-    toggleScrollButton: (conditional) => dispatch(toggleScrollButton(conditional)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+export default LandingPage;

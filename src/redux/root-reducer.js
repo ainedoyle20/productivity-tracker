@@ -4,14 +4,12 @@ import userReducer from "./user/user.reducer";
 import todosReducer from "./todos/todos.reducer";
 import calendarReducer from "./calendar/calendar.reducer";
 import progressReducer from "./progress/progress.reducer";
-import scrollButtonReducer from './scrollButton/scrollButton.reducer';
 
 const rootReducer = combineReducers({
     user: userReducer,
     todos: todosReducer,
     calendar: calendarReducer,
     progress: progressReducer,
-    scrollButton: scrollButtonReducer,
 });
 
 export default rootReducer;

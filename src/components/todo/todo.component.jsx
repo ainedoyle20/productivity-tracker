@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { completeTodo, deleteTodo, editTodo } from '../../redux/todos/todos.actions';
 
@@ -19,7 +19,8 @@ import {
     TodoActionIcon
 } from './todo.styles';
 
-const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
+const Todo = ({ todo }) => {
+    const dispatch = useDispatch();
 
     const [edit, setEdit] = useState({
         id: null,
@@ -27,7 +28,7 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
     });
 
     const submitEdit = editDescription => {
-        editTodo(edit.id, editDescription);
+        dispatch(editTodo(edit.id, editDescription));
         setEdit({
             id: null,
             value: ''
@@ -51,7 +52,7 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
                 <TodoIconsContainer>
                     <TodoActionIcon 
                         src={TickIcon} alt="tick button"
-                        onClick={() => completeTodo(todo)}
+                        onClick={() => dispatch(completeTodo(todo))}
                     />
                     <TodoActionIcon 
                         src={EditIcon} alt="edit button"
@@ -59,7 +60,7 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
                     />
                     <TodoActionIcon 
                         src={DeleteIcon} alt="delete button"
-                        onClick={() => deleteTodo(todo)}
+                        onClick={() => dispatch(deleteTodo(todo))}
                     />
                 </TodoIconsContainer>
             </TodoContainer> 
@@ -68,10 +69,4 @@ const Todo = ({ todo, completeTodo, deleteTodo, editTodo }) => {
     );
 }
 
-const mapDispatchToProps = dispatch => ({
-    completeTodo: (todo) => dispatch(completeTodo(todo)),
-    deleteTodo: (todo) => dispatch(deleteTodo(todo)),
-    editTodo: (todoId, todoDescription) => dispatch(editTodo({ todoId, todoDescription})),
-});
-
-export default connect(null, mapDispatchToProps)(Todo);
+export default Todo;

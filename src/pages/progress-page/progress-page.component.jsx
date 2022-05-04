@@ -1,7 +1,12 @@
 import React, {useEffect, useState} from "react";
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
 
 import { fetchDatesAndPercentages } from '../../firebase/firebase.utils';
+
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectCurrentDate } from '../../redux/calendar/calendar.selectors';
+import { selectProgressDateDisplay, selectProgressNav } from '../../redux/progress/progress.selectors';
+
 import { setProgressDateDisplay, incrementProgressNav, decrementProgressNav } from '../../redux/progress/progress.actions';
 
 import ProgressChart from "../../components/progress-chart/progress-chart.component";
@@ -13,7 +18,13 @@ import {
     NoChartDataMessageContainer,
 } from './progress-page.styles';
 
-const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDisplay, progressDateDisplay, incrementProgressNav, decrementProgressNav }) => {
+const ProgressPage = () => {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+    const currentDate = useSelector(selectCurrentDate);
+    const progressNav = useSelector(selectProgressNav);
+    const progressDateDisplay = useSelector(selectProgressDateDisplay);
+
     const [dates, setDates] = useState([]);
     const [percentages, setPercentages] = useState([]);
 
@@ -30,7 +41,7 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
         }
 
         const year = dt.getFullYear();
-        setProgressDateDisplay(`${dt.toLocaleDateString('en-gb', { month: 'long' })} ${year}`);
+        dispatch(setProgressDateDisplay(`${dt.toLocaleDateString('en-gb', { month: 'long' })} ${year}`));
 
         const currentUserId = currentUser ? currentUser.id : null;
 
@@ -44,7 +55,7 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
             runAsyncFunc();
         }
 
-    }, [currentUser, progressNav, currentDate, setProgressDateDisplay]);
+    }, [progressNav]);
 
     return (
         <ProgressPageContainer>
@@ -52,9 +63,9 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
                 currentUser ? (
                     <>
                         <ProgressPageTitleContainer>
-                            <ProgressPageButton onClick={() => decrementProgressNav()}>Back</ProgressPageButton>
+                            <ProgressPageButton onClick={() => dispatch(decrementProgressNav())}>Back</ProgressPageButton>
                             <h2>{progressDateDisplay}</h2>
-                            <ProgressPageButton onClick={() => incrementProgressNav()}>Forward</ProgressPageButton>
+                            <ProgressPageButton onClick={() => dispatch(incrementProgressNav())}>Forward</ProgressPageButton>
                         </ProgressPageTitleContainer>
                         <ProgressChart dates={dates}  percentages={percentages} /> 
                         <NoChartDataMessageContainer chartData={dates.length}>
@@ -69,17 +80,4 @@ const ProgressPage = ({ currentDate, currentUser, progressNav, setProgressDateDi
     );
 }
 
-const mapStateToProps = ({ calendar, user, progress }) => ({
-    currentDate: calendar.currentDate,
-    currentUser: user.currentUser,
-    progressNav: progress.progressNav,
-    progressDateDisplay: progress.progressDateDisplay,
-});
-
-const mapDispatchToProps = dispatch => ({
-    setProgressDateDisplay: (progressDateDisplay) => dispatch(setProgressDateDisplay(progressDateDisplay)),
-    incrementProgressNav: () => dispatch(incrementProgressNav()),
-    decrementProgressNav: () => dispatch(decrementProgressNav()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProgressPage);
+export default ProgressPage;

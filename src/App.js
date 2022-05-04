@@ -1,6 +1,8 @@
 import React, {useEffect, Suspense} from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
+
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 import { updateIncompletedTodos, updateCompletedTodos } from './redux/todos/todos.actions';
 import { setCurrentDate } from './redux/calendar/calendar.actions';
@@ -17,7 +19,9 @@ const LandingPage = React.lazy(() => import('./pages/landing-page/landing-page.c
 const RegisterAndLoginPage = React.lazy(() => import('./pages/register-and-login-page/register-and-login-page.component'));
 const MainPage = React.lazy(() => import('./pages/main-page/main-page.component'));
 
-const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncompletedTodos, setCurrentDate}) => {
+const App = () => {
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
 
   useEffect(() => {
     if (currentUser) {
@@ -31,19 +35,19 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
       const currentDate = `${day}-${month + 1}-${year}`;
-      setCurrentDate(currentDate);
+      dispatch(setCurrentDate(currentDate));
 
       firebasePercentagesCheck(currentUserId, currentDate, daysInMonth);
 
       const fetchFirebaseTodos = async () => {
         const {firebaseTodos, firebaseCompletedTodos} = await fetchTodosForCurrentDay(currentUserId, currentDate);
-        updateCompletedTodos(firebaseCompletedTodos); 
-        updateIncompletedTodos(firebaseTodos);
+        dispatch(updateCompletedTodos(firebaseCompletedTodos)); 
+        dispatch(updateIncompletedTodos(firebaseTodos));
       }
 
       fetchFirebaseTodos();
     }
-  }, [currentUser, setCurrentDate, updateCompletedTodos, updateIncompletedTodos]);
+  }, [currentUser]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async userAuth => {
@@ -51,19 +55,20 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
         const userRef = await createUserProfileDocument(userAuth);
 
         onSnapshot(userRef, snapShot => {
-          setCurrentUser({
+          dispatch(setCurrentUser({
             id: snapShot.id,
             ...snapShot.data()
-          })
+          }))
         });
 
       } else {
-        setCurrentUser(userAuth);
+        dispatch(setCurrentUser(userAuth));
       }
     });
     
     return unsub;
-  }, [setCurrentUser]);
+
+  }, []);
 
   return (
     <div>
@@ -82,17 +87,4 @@ const App = ({setCurrentUser, currentUser, updateCompletedTodos, updateIncomplet
   ); 
 };
 
-const mapStateToProps = ({ user, todos }) => ({
-  currentUser: user.currentUser,
-  todos: todos.todos,
-  completedTodos: todos.completedTodos,
-});
-
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-  updateCompletedTodos: (completedTodosArray) => dispatch(updateCompletedTodos(completedTodosArray)),
-  updateIncompletedTodos: (inCompleteTodos) => dispatch(updateIncompletedTodos(inCompleteTodos)),
-  setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

@@ -1,7 +1,9 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { auth, signOut } from "../../firebase/firebase.utils";
+
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 import BackArrow from '../../assets/left-arrow.svg';
 
@@ -13,7 +15,9 @@ import {
     WelcomeHeaderLinksContainer,
 } from './welcome-header.styles';
  
-const WelcomeHeader = ({ currentUser }) => {
+const WelcomeHeader = () => {
+    const currentUser = useSelector(selectCurrentUser);
+
     return (
         <WelcomeHeaderContainer>
             <BackToHomeLinkContainer>
@@ -41,8 +45,4 @@ const WelcomeHeader = ({ currentUser }) => {
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-export default connect(mapStateToProps)(WelcomeHeader);
+export default WelcomeHeader;

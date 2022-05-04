@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { checkForTodosItem, getCalendarTodos, saveCalendarTodosToFirebase } from "../../firebase/firebase.utils";
+
+import { selectCurrentUser } from "../../redux/user/user.selectors";
+import { selectIsPastDate, selectSelectedDate } from "../../redux/calendar/calendar.selectors";
 
 import { toggleHidden } from '../../redux/calendar/calendar.actions';
 
@@ -19,20 +22,26 @@ import {
     CloseModalButton,
 } from './calendar-modal.styles';
 
-const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) => {
+
+const CalendarModal = () => {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+    const selectedDate = useSelector(selectSelectedDate);
+    const isPastDate = useSelector(selectIsPastDate);
+
     const [calendarTodos, setCalendarTodos] = useState([]);
     const [calendarInput, setCalendarInput] = useState('');
-
-    const runOnOpen = async () => {
-        const todosAvailable = await checkForTodosItem(currentUser.id, selectedDate);
-
-        if (todosAvailable) {
-            const firebaseTodos = await getCalendarTodos(currentUser.id, selectedDate);
-            setCalendarTodos(firebaseTodos);
-        }  
-    }
     
     useEffect(() => {
+        const runOnOpen = async () => {
+            const todosAvailable = await checkForTodosItem(currentUser.id, selectedDate);
+    
+            if (todosAvailable) {
+                const firebaseTodos = await getCalendarTodos(currentUser.id, selectedDate);
+                setCalendarTodos(firebaseTodos);
+            }  
+        }
+
         runOnOpen();
     }, []);
 
@@ -66,7 +75,7 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
             await saveCalendarTodosToFirebase(currentUser.id, selectedDate, calendarTodos); 
         }
         setCalendarTodos([]);
-        toggleHidden();
+        dispatch(toggleHidden());
     }
 
     return (
@@ -121,14 +130,4 @@ const CalendarModal = ({ toggleHidden, currentUser, selectedDate, isPastDate }) 
     );
 };
 
-const mapStateToProps = ({ calendar, user }) => ({
-    currentUser: user.currentUser,
-    selectedDate: calendar.selectedDate,
-    isPastDate: calendar.isPastDate,
-});
-
-const mapDispatchToProps = dispatch => ({
-    toggleHidden: () => dispatch(toggleHidden()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarModal);
+export default CalendarModal;

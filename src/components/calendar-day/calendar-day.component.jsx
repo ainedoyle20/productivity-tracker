@@ -1,16 +1,20 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
+import { selectCurrentDate } from "../../redux/calendar/calendar.selectors";
 import { toggleHidden, selectDate, checkSelectedDate } from "../../redux/calendar/calendar.actions";
 
 import { CalendarDayContainer } from './calendar-day.styles';
 
-const CalendarDay = ({ day, toggleHidden, selectDate, checkSelectedDate, currentDate }) => {
+const CalendarDay = ({ day }) => {
     const navigate = useNavigate();
     const redirectToHome = () => {
       navigate('/main/home');
     }
+
+    const dispatch = useDispatch();
+    const currentDate = useSelector(selectCurrentDate);
 
     return (
         <CalendarDayContainer padding={day.value === 'padding' ? true : false} isCurrentDay={day.isCurrentDay} onClick={() => {
@@ -19,9 +23,9 @@ const CalendarDay = ({ day, toggleHidden, selectDate, checkSelectedDate, current
                 console.log('this is the currentDate!');
                 redirectToHome();
               } else {
-                toggleHidden(); 
-                selectDate(day.date);
-                checkSelectedDate(day.date);
+                dispatch(toggleHidden()); 
+                dispatch(selectDate(day.date));
+                dispatch(checkSelectedDate(day.date));
               }
             }
           }}>
@@ -32,14 +36,4 @@ const CalendarDay = ({ day, toggleHidden, selectDate, checkSelectedDate, current
     );
 };
 
-const mapStateToProps = ({ calendar }) => ({
-  currentDate: calendar.currentDate,
-});
-
-const mapDispatchToProps = dispatch => ({
-  toggleHidden: () => dispatch(toggleHidden()),
-  selectDate: (date) => dispatch(selectDate(date)),
-  checkSelectedDate: (date) => dispatch(checkSelectedDate(date)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarDay);
+export default CalendarDay;

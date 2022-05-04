@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { connect } from 'react-redux';
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
 import { registerWithEmailAndPassword, createUserProfileDocument, auth, signInWithEmailAndPassword } from "../../firebase/firebase.utils";
+
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 
 import Register from "../../components/register/register.component";
 import Login from '../../components/login/login.component';
@@ -12,7 +14,9 @@ import BackArrow from '../../assets/left-arrow.svg';
 
 import { RegisterAndLoginPageContainer, BackToSetupLinkContainer } from './register-and-login-page.styles';
 
-const RegisterAndLoginPage = ({ currentUser }) => {
+const RegisterAndLoginPage = () => {
+    const currentUser = useSelector(selectCurrentUser);
+
     const [formData, setFormData] = useState({
         displayName: '',
         registerEmail: '',
@@ -108,8 +112,4 @@ const RegisterAndLoginPage = ({ currentUser }) => {
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-export default connect(mapStateToProps)(RegisterAndLoginPage);
+export default RegisterAndLoginPage;
