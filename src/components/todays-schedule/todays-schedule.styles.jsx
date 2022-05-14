@@ -1,18 +1,12 @@
 import styled from "styled-components";
 
-export const HomePageContainer = styled.div`
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
-
 export const TodaysScheduleContainer = styled.div`
     background-color: rgb(219, 219, 219);
     border-radius: 10%;
     width: 60vw;
     height: 80vh;
+    margin: auto;
+    margin-top: 10vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -51,7 +45,6 @@ export const CreateTodoContainer = styled.div`
 
 export const CreateTodoInput = styled.input`
     border: none;
-    border-bottom: 1px solid black;
     padding: 10px 10px;
     margin-right: 10px;
     width: 50%;
@@ -90,8 +83,9 @@ export const TodaysTodosListContainer = styled.div`
 export const TodosListTitleContainer = styled.div`
     width: 100%;
     height: 30px;
-    font-size: 20px;
-    text-decoration: underline;
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
     margin-bottom: 0;
     padding: 0 20px;
 `;
@@ -103,4 +97,9 @@ export const TodaysTodosList = styled.ul`
     display: flex;
     flex-direction: column;
     align-items: center;
+`;
+
+export const HorizontalLine = styled.hr`
+    width: 80%;
+    margin-bottom: 30px;
 `;

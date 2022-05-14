@@ -28,14 +28,12 @@ const Todo = ({ todo }) => {
     });
 
     const submitEdit = editDescription => {
-        dispatch(editTodo(edit.id, editDescription));
+        dispatch(editTodo({todoId: edit.id, editDescription}));
         setEdit({
             id: null,
             value: ''
         });
     };
-
-    
 
     if (edit.id) {
         return <TodoEditForm edit={edit} submitEdit={submitEdit}/>

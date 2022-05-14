@@ -10,7 +10,6 @@ import CalendarHeader from "../../components/calendarHeader/calendarHeader.compo
 import Calendar from "../../components/calendar/calendar.component";
 
 import {
-    SchedulePageContainer,
     CalendarPlatform,
     WeekdaysContainer
 } from './schedule-page.styles';
@@ -22,6 +21,8 @@ const SchedulePage = () => {
     const dateDisplay = useSelector(selectCalendarDateDisplay);
 
     useEffect(() => {
+        if (!currentUser) return;
+
         const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const dt = new Date();
 
@@ -71,35 +72,30 @@ const SchedulePage = () => {
         dispatch(setDays(daysArr));
     }, [nav]);
 
+    if (!currentUser) {
+        return (<h2 style={{ margin: 'auto', marginTop: '40vh', width: '40vw' }}>Please login to schedule tasks</h2>)
+    }
+
     return (
-        
-        <SchedulePageContainer>
-            {
-                currentUser 
-                ? (
-                    <CalendarPlatform>
-                        <CalendarHeader 
-                            dateDisplay={dateDisplay}
-                        />
+        <CalendarPlatform>
+            
+            <CalendarHeader 
+                dateDisplay={dateDisplay}
+            />
 
-                        <WeekdaysContainer>
-                            <div>Monday</div>
-                            <div>Tuesday</div>
-                            <div>Wednesday</div>
-                            <div>Thursday</div>
-                            <div>Friday</div>
-                            <div>Saturday</div>
-                            <div>Sunday</div>
-                        </WeekdaysContainer>
+            <WeekdaysContainer>
+                <div>Monday</div>
+                <div>Tuesday</div>
+                <div>Wednesday</div>
+                <div>Thursday</div>
+                <div>Friday</div>
+                <div>Saturday</div>
+                <div>Sunday</div>
+            </WeekdaysContainer>
 
-                        <Calendar />
+            <Calendar />
 
-                    </CalendarPlatform>
-                )
-                :   
-                    <h2>Login to schedule future todos.</h2>
-            }
-        </SchedulePageContainer>
+        </CalendarPlatform>
     );
 }
 

@@ -1,12 +1,14 @@
 import styled from "styled-components";
 
 export const ProgressPageContainer = styled.div`
-    height: 100vh;
+    margin: auto;
+    margin-top: 10vh;
+    padding-top: 6vh;
+    width: 80vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 15vh;
 `;
 
 export const ProgressPageTitleContainer = styled.div`

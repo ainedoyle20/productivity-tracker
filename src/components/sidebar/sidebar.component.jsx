@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { auth, signOut } from "../../firebase/firebase.utils";
+
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 import Menu from '../../assets/menu.svg';
 import Home from '../../assets/home-svg.svg';
@@ -19,8 +22,12 @@ import {
 } from './sidebar.styles';
 
 const Sidebar = () => {
+    const currentUser = useSelector(selectCurrentUser);
+
     const [ clickStatus, setClickStatus ] = useState(false);
     const handleClick = () => setClickStatus(!clickStatus);
+
+    if (!currentUser) return null;
 
     return (
         <SidbarContainer>

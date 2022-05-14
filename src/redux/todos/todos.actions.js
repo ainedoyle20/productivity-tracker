@@ -20,16 +20,8 @@ export const editTodo = (todoIdAndDescription) => ({
     payload: todoIdAndDescription
 });
 
-export const updateIncompletedTodos = (notCompletedTodosArray) => ({
-    type: TodosActionTypes.UPDATE_INCOMPLETE_TODOS,
-    payload: notCompletedTodosArray,
+export const updateTodos = (todos) => ({
+    type: TodosActionTypes.UPDATE_TODOS,
+    payload: todos
 });
 
-export const updateCompletedTodos = (completedTodosArray) => ({
-    type: TodosActionTypes.UPDATE_COMPLETED_TODOS,
-    payload: completedTodosArray,
-});
-
-export const updatePercentage = () => ({
-    type: TodosActionTypes.UPDATE_PERCENTAGE,
-});

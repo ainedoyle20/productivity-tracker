@@ -10,6 +10,8 @@ export const SchedulePageContainer = styled.div`
 `;
 
 export const CalendarPlatform = styled.div`
+    margin: auto;
+    margin-top: 10vh;
     width: 770px;
 
     @media screen and (max-width: 800px) {

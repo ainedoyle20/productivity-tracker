@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ProgressChartContainer  = styled.div`
-    height: 80vh;
+    height: auto;
     width: 80vw;
     display: flex;
     justifyContent: center;

@@ -4,12 +4,10 @@ import { Routes, Route } from 'react-router-dom';
 
 import { selectCurrentUser } from './redux/user/user.selectors';
 
-import { updateIncompletedTodos, updateCompletedTodos } from './redux/todos/todos.actions';
+import { setCurrentUser } from './redux/user/user.actions';
 import { setCurrentDate } from './redux/calendar/calendar.actions';
 
-import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth, fetchTodosForCurrentDay, firebasePercentagesCheck } from './firebase/firebase.utils';
-
-import { setCurrentUser } from './redux/user/user.actions';
+import { createUserProfileDocument, onAuthStateChanged, onSnapshot, auth, firebasePercentagesCheck } from './firebase/firebase.utils';
 
 import ErrorBoundary from './components/error-boundary/error-boundary.component';
 
@@ -39,13 +37,6 @@ const App = () => {
 
       firebasePercentagesCheck(currentUserId, currentDate, daysInMonth);
 
-      const fetchFirebaseTodos = async () => {
-        const {firebaseTodos, firebaseCompletedTodos} = await fetchTodosForCurrentDay(currentUserId, currentDate);
-        dispatch(updateCompletedTodos(firebaseCompletedTodos)); 
-        dispatch(updateIncompletedTodos(firebaseTodos));
-      }
-
-      fetchFirebaseTodos();
     }
   }, [currentUser]);
 
@@ -76,10 +67,10 @@ const App = () => {
       <ErrorBoundary>
         <Suspense fallback={<h2>Loading...</h2>}>
           <Routes>
-            <Route exact path="/" element={<LandingPage/>} />
-            <Route path="/register" element={<RegisterAndLoginPage/>} />
-            <Route path="/main/*" element={<MainPage />} />
-            <Route path="*" element={<LandingPage/>} />
+              <Route path="/" element={<LandingPage/>} />
+              <Route path="register" element={<RegisterAndLoginPage/>} />
+              <Route path="main/*" element={<MainPage />} />
+              <Route path="*" element={<LandingPage/>} />
           </Routes>
         </Suspense>
       </ErrorBoundary>

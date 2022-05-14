@@ -1,62 +1,45 @@
 export const editTodoHelper = (todosList, todoIdAndDescription) => {
-    const todoId = todoIdAndDescription.todoId;
-    const todoDescription = todoIdAndDescription.todoDescription;
-    console.log('todoId: ', todoId);
-    console.log('todoDescription: ', todoDescription);
+    console.log('todoIdAndDescription', todoIdAndDescription);
+    const { todoId, editDescription } = todoIdAndDescription
 
-    todosList.forEach(obj => {
+    // selectTodosList needs to act like it has accepted a new array
+    // in order to trigger selectIncompleteTods and selectCompletedTodos
+    const newTodoList = [];
+    todosList.map(obj => {
         if (obj.id === todoId) {
-            obj.description = todoDescription;
+            obj.description = editDescription;
         }
+        newTodoList.push(obj);
     });
 
-    return todosList;
+    return newTodoList;
 }
 
-const findGreatestId = (todosList, completedTodosList) => {
-    let largestTodoId = 0;
+const findGreatestId = (todosList) => {
+    let greatestId = 0;
     if (todosList.length > 0) {
         todosList.forEach(obj => {
-            if (obj.id > largestTodoId) {
-                largestTodoId = obj.id;
+            if (obj.id > greatestId) {
+                greatestId = obj.id;
             }
         })
     }
 
-    let largestCompletedTodoId = 0;
-    if (completedTodosList.length > 0) {
-        completedTodosList.forEach(obj => {
-            if (obj.id > largestCompletedTodoId) {
-                largestCompletedTodoId = obj.id;
-            }
-        })
-    }
-
-    return largestTodoId > largestCompletedTodoId ? largestTodoId : largestCompletedTodoId;
+    return greatestId;
 }
 
-export const createTodoHelper = (todosList, completedTodosList, todoDescription) => {
-    const greatestId = findGreatestId(todosList, completedTodosList);
+export const createTodoHelper = (todosList, todoDescription) => {
+    const greatestId = findGreatestId(todosList);
     const newTodoId = greatestId + 1;
 
     const newTodo = {id: newTodoId, description: todoDescription};
-    todosList.push(newTodo);
-    return todosList;
+    return [...todosList, {...newTodo}];
 }
 
-export const removeCompletedTodo = (todosList, completedTodo) => {
-    return todosList.filter(todo => todo.id !== completedTodo.id);
-}
-
-export const addCompletedTodo = (completedTodosList, completedTodo) => {
-    completedTodosList.push(completedTodo);
-    return completedTodosList;
-}
-
-
-export const calculatePercentage = (todosList, completedTodosList) => {
-    if (completedTodosList.length === 0) return 0;
-    const totalTodos = todosList.length + completedTodosList.length;
-    const percentage = Math.floor((completedTodosList.length / totalTodos) * 100);
-    return percentage;
+export const completeTodoHelper = (todosList, completedTodo) => {
+    return todosList.map(todo => (
+        todo.id === completedTodo.id 
+        ? { ...todo, complete: true }
+        : todo
+    ));
 }

@@ -1,13 +1,9 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// So adding the SDKS....
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import {getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc} from 'firebase/firestore';
 
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB_NYtGyXDo_VL5cHYxsMJhzrkQdwxRJ7M",
   authDomain: "productivity-tracker-786b5.firebaseapp.com",
@@ -17,12 +13,48 @@ const firebaseConfig = {
   appId: "1:723141920631:web:b7870e682045967070c372"
 };
 
-// Initialize Firebase
+// Initializing Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+// User
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+    if (!userAuth) return;
+
+    const userRef = doc(db, 'users', `${userAuth.uid}`);
+    const snapShot = await getDoc(userRef);
+
+    if (!snapShot.exists()) {
+        const { displayName, email } = userAuth;
+        const createdAt = new Date();
+
+        try {
+            await setDoc(userRef, {
+                displayName,
+                email,
+                createdAt,
+                ...additionalData
+            });
+        } catch (error) {
+            console.log('error creating user document: ', error.message);
+        }
+    }
+
+    return userRef;
+}
+
+export const registerWithEmailAndPassword = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+}
+
+provider.setCustomParameters({ prompt: 'select_account'});
+export const signInWithGoogle = () => signInWithPopup(auth, provider).then((result) => console.log('signed in with google: ', result)).catch(error => console.log(error.message));
+
+export {onAuthStateChanged, onSnapshot, signOut, signInWithEmailAndPassword};
+
+// Todos
 export const checkForTodosItem = async (currentUserId, date) => {
     const todosRef = doc(db, 'todos', currentUserId);
     const todosSnap = await getDoc(todosRef);
@@ -36,12 +68,43 @@ export const checkForTodosItem = async (currentUserId, date) => {
     }
 }
 
-export const getCalendarTodos = async (currentUserId, date) => {
-    const todosRef = doc(db, 'todos', currentUserId);
-    const todosSnap = await getDoc(todosRef);
-    const todos = todosSnap.data();
-    const firebaseTodos = todos[date]['todos'];
-    return firebaseTodos;
+export const setTodoItem = async (currentUserId, date) => {
+    const docRef = doc(db, 'todos', currentUserId);
+    
+    try {
+        await updateDoc(docRef, {
+            [date]: []
+        });
+    } catch (error) {
+        console.log('error setting item: ', error.message)
+    }
+}
+
+export const setTodoDoc = async (currentUserId, date) => {
+    const docRef = doc(db, 'todos', currentUserId);
+    
+    try {
+        await setDoc(docRef, {
+            [date]: []
+        });
+    } catch (error) {
+        console.log('error setting doc, ', error.message)
+    }
+}
+
+export const updateTodosForCurrentDay = async (currentUserId, date, todos) => {
+    const docRef = doc(db, 'todos', currentUserId);
+    const snapshot = await getDoc(docRef);
+    if(!snapshot.exists()) return;
+
+    
+    try {
+        await updateDoc(docRef, {
+            [date]: [...todos]
+        });
+    } catch (error) {
+        console.log('error updating doc, ', error.message)
+    }
 }
 
 export const fetchTodosForCurrentDay = async (currentUserId, date) => {
@@ -50,21 +113,73 @@ export const fetchTodosForCurrentDay = async (currentUserId, date) => {
 
     if (!todosSnap.exists()) {
         setTodoDoc(currentUserId, date);
-        const firebaseTodos = [];
-        const firebaseCompletedTodos =  [];
-        return {firebaseTodos, firebaseCompletedTodos};
+        return [];
     } else {
-        const todos = todosSnap.data();
-        if (todos[date]) {
-            const firebaseTodos = todos[date]['todos'];
-            const firebaseCompletedTodos =  todos[date]['completedTodos'];
-            return {firebaseTodos, firebaseCompletedTodos};  
-        } else {
-            updateTodosForCurrentDay(currentUserId, date, [], []);
-            const firebaseTodos = [];
-            const firebaseCompletedTodos =  [];
-            return {firebaseTodos, firebaseCompletedTodos};
-        } 
+        const todosDoc = todosSnap.data();
+
+        const todosList = todosDoc[date] ? todosDoc[date] : []
+
+        return todosList;
+    }
+}
+
+// Calendar
+export const getCalendarTodos = async (currentUserId, date) => {
+    const todosRef = doc(db, 'todos', currentUserId);
+    const todosSnap = await getDoc(todosRef);
+    const todosDoc = todosSnap.data();
+    const todosList = todosDoc[date];
+    return todosList;
+}
+
+export const saveCalendarTodosToFirebase = async (currentUserId, date, calendarTodos) => {
+    if (calendarTodos.length === 0) {
+        return;
+    }
+
+    const docRef = doc(db, 'todos', currentUserId);
+
+    try {
+        await updateDoc(docRef, {
+            [date]: calendarTodos
+        });
+    } catch (error) {
+        console.log('error saving calendar todos to firebase, ', error.message)
+    }
+}
+
+// Percentages
+const createNewMonthField = async (currentUserId, monthField, daysInMonth) => {
+    let datesObj = {};
+    for (let i = 1; i <= daysInMonth; i++) {
+        datesObj[i] = 0;
+    }
+
+    const docRef = doc(db, 'percentages', currentUserId);
+
+    try {
+        await updateDoc(docRef, {
+            [monthField]: datesObj,
+        });
+    } catch (error) {
+        console.log('error creating new Month Filed: ', error.message);
+    }
+}
+
+const setPercentageDoc = async (currentUserId, monthField, daysInMonth) => {
+    let datesObj = {};
+    for (let i = 1; i <= daysInMonth; i++) {
+        datesObj[i] = 0;
+    }
+
+    const docRef = doc(db, 'percentages', currentUserId);
+
+    try {
+        await setDoc(docRef, {
+            [monthField]: datesObj,
+        });
+    } catch (error) {
+        console.log('error setting percentage doc: ', error.message);
     }
 }
 
@@ -86,23 +201,6 @@ export const firebasePercentagesCheck = async (currentUserId, date, daysInMonth)
         return;
     }
     return;
-}
-
-const createNewMonthField = async (currentUserId, monthField, daysInMonth) => {
-    let datesObj = {};
-    for (let i = 1; i <= daysInMonth; i++) {
-        datesObj[i] = 0;
-    }
-
-    const docRef = doc(db, 'percentages', currentUserId);
-
-    try {
-        await updateDoc(docRef, {
-            [monthField]: datesObj,
-        });
-    } catch (error) {
-        console.log('error creating new Month Filed: ', error.message);
-    }
 }
 
 export const fetchDatesAndPercentages = async (currentUserId, monthField) => {
@@ -143,118 +241,3 @@ export const updatePercentageValue = async (currentUserId, date, todosPercentage
         console.log('error updatingPercentageValue: ', error.message);
     }
 }
-
-export const updateTodosForCurrentDay = async (currentUserId, date, notCompleted, isCompleted) => {
-    const docRef = doc(db, 'todos', currentUserId);
-    const snapshot = await getDoc(docRef);
-    if(!snapshot.exists()) return;
-
-    
-    try {
-        await updateDoc(docRef, {
-            [date]: {
-                'todos': notCompleted,
-                'completedTodos': isCompleted,
-            }
-        });
-    } catch (error) {
-        console.log('error updating doc, ', error.message)
-    }
-}
-
-export const saveCalendarTodosToFirebase = async (currentUserId, date, calendarTodos) => {
-    if (calendarTodos.length === 0) {
-        return;
-    }
-
-    const docRef = doc(db, 'todos', currentUserId);
-
-    try {
-        await updateDoc(docRef, {
-            [`${date}.todos`]: calendarTodos
-        });
-    } catch (error) {
-        console.log('error saving calendar todos to firebase, ', error.message)
-    }
-}
-
-export const setPercentageDoc = async (currentUserId, monthField, daysInMonth) => {
-    let datesObj = {};
-    for (let i = 1; i <= daysInMonth; i++) {
-        datesObj[i] = 0;
-    }
-
-    const docRef = doc(db, 'percentages', currentUserId);
-
-    try {
-        await setDoc(docRef, {
-            [monthField]: datesObj,
-        });
-    } catch (error) {
-        console.log('error setting percentage doc: ', error.message);
-    }
-}
-
-export const setTodoItem = async (currentUserId, date) => {
-    const docRef = doc(db, 'todos', currentUserId);
-    
-    try {
-        await updateDoc(docRef, {
-            [date]: {
-                'todos': [],
-                'completedTodos': [],
-            }
-        });
-    } catch (error) {
-        console.log('error setting item: ', error.message)
-    }
-}
-
-export const setTodoDoc = async (currentUserId, date) => {
-    const docRef = doc(db, 'todos', currentUserId);
-    
-    try {
-        await setDoc(docRef, {
-            [date]: {
-                'todos': [],
-                'completedTodos': [],
-            }
-        });
-    } catch (error) {
-        console.log('error setting doc, ', error.message)
-    }
-}
-
-export const createUserProfileDocument = async (userAuth, additionalData) => {
-    if (!userAuth) return;
-
-    const userRef = doc(db, 'users', `${userAuth.uid}`);
-    const snapShot = await getDoc(userRef);
-
-    if (!snapShot.exists()) {
-        const { displayName, email } = userAuth;
-        const createdAt = new Date();
-
-        try {
-            await setDoc(userRef, {
-                displayName,
-                email,
-                createdAt,
-                ...additionalData
-            });
-        } catch (error) {
-            console.log('error creating user document: ', error.message);
-        }
-    }
-
-    return userRef;
-}
-
-export const registerWithEmailAndPassword = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
-}
-
-provider.setCustomParameters({ prompt: 'select_account'});
-export const signInWithGoogle = () => signInWithPopup(auth, provider).then((result) => console.log('signed in with google: ', result)).catch(error => console.log(error.message));
-
-export {onAuthStateChanged, onSnapshot, signOut, signInWithEmailAndPassword};

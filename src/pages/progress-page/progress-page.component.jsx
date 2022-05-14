@@ -29,6 +29,8 @@ const ProgressPage = () => {
     const [percentages, setPercentages] = useState([]);
 
     useEffect(() => {
+        if (!currentUser) return;
+
         const dt = new Date();
         const parsedDate = currentDate.split('-');
         let monthField = '';
@@ -57,25 +59,25 @@ const ProgressPage = () => {
 
     }, [progressNav]);
 
+    if (!currentUser) {
+        return (<h2 style={{ margin: 'auto', marginTop: '40vh', width: '40vw' }}>Please login to view your progress chart</h2>)
+    }
+
     return (
         <ProgressPageContainer>
-            {
-                currentUser ? (
-                    <>
-                        <ProgressPageTitleContainer>
-                            <ProgressPageButton onClick={() => dispatch(decrementProgressNav())}>Back</ProgressPageButton>
-                            <h2>{progressDateDisplay}</h2>
-                            <ProgressPageButton onClick={() => dispatch(incrementProgressNav())}>Forward</ProgressPageButton>
-                        </ProgressPageTitleContainer>
-                        <ProgressChart dates={dates}  percentages={percentages} /> 
-                        <NoChartDataMessageContainer chartData={dates.length}>
-                            <h2>No Data For This Month</h2>
-                        </NoChartDataMessageContainer>
-                    </>
-                ) : (   
-                        <h2>Login to see your progress chart</h2>
-                )
-            }
+
+            <ProgressPageTitleContainer>
+                <ProgressPageButton onClick={() => dispatch(decrementProgressNav())}>Back</ProgressPageButton>
+                <h2>{progressDateDisplay}</h2>
+                <ProgressPageButton onClick={() => dispatch(incrementProgressNav())}>Forward</ProgressPageButton>
+            </ProgressPageTitleContainer>
+
+            <ProgressChart dates={dates}  percentages={percentages} />
+
+            <NoChartDataMessageContainer chartData={dates.length}>
+                <h2>No Data For This Month</h2>
+            </NoChartDataMessageContainer>
+            
         </ProgressPageContainer>
     );
 }
